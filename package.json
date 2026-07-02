@@ -1,8 +1,9 @@
 {
-  "name": "eds-preact",
+  "name": "eds-vite",
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "description": "A modern Vite runtime for Adobe Edge Delivery Services.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

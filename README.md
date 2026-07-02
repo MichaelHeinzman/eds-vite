@@ -1,4 +1,4 @@
-# EDS Preact
+# EDS Vite
 
 A modern runtime for Adobe Edge Delivery Services (EDS) built with Vite, Preact, and TypeScript.
 

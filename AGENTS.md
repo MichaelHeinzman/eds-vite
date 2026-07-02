@@ -2,7 +2,7 @@
 
 ## Overview
 
-EDS Preact is a modern runtime for Adobe Edge Delivery Services (EDS) built with:
+EDS Vite is a modern runtime for Adobe Edge Delivery Services (EDS) built with:
 
 - Vite
 - Preact
@@ -20,7 +20,7 @@ Authors continue authoring semantic HTML. Blocks progressively enhance authored 
 
 Prefer the following:
 
-1. Preact components
+1. Preact components (Any component that vite supports really but preact is preferred)
 2. TypeScript
 3. Native browser APIs
 
