@@ -1,0 +1,154 @@
+:root {
+  --ff-primary: soleil, -apple-system, blinkmacsystemfont, sans-serif;
+  --ff-secondary: orpheuspro, serif;
+  --ff-activate-icons: activate-icons, serif;
+  --fixed-font-family: menlo, consolas, "Liberation Mono", monospace;
+  --heading-font-family: var(--ff-secondary);
+  --base-font-family: soleil, -apple-system, "system-ui", sans-serif;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semi-bold: 600;
+  --fw-bold: 700;
+  --fw-x-bold: 800;
+  --fw-xx-bold: 900;
+
+  --base-font-size: calc((16 / 16) * 1rem);
+  --base-line-height: calc((24 / 16) * 1rem);
+  --body-font-size: var(--base-font-size);
+
+  --heading-font-xxl: var(--fw-regular) 36px / 40px var(--ff-secondary);
+  --heading-font-xl: var(--fw-regular) 28px / 32px var(--ff-secondary);
+  --heading-font-l: var(--fw-semi-bold) 24px / 28px var(--ff-primary);
+  --heading-font-m: var(--fw-semi-bold) 18px / 22px var(--ff-primary);
+  --heading-font-s: var(--fw-regular) 15px / 24px var(--ff-primary);
+  --heading-font-xs: var(--fw-regular) 13px / 20px var(--ff-primary);
+  --custom-heading-font: var(--fw-regular) 24px / 28px var(--ff-secondary);
+
+  --para-font: var(--heading-font-s);
+  --para-font-sm: var(--heading-font-xs);
+  --label-font: var(--fw-regular) 16px/24px var(--ff-primary);
+  --label-font-sm: var(--fw-semi-bold) 15px/19px var(--ff-primary);
+  --list-font: var(--fw-regular) 15px/24px var(--ff-primary);
+  --textlink-font: var(--fw-semi-bold) 15px/18px var(--ff-primary);
+
+  --spacing-micro: calc((4 / 16) * 1rem);
+  --spacing-jumbo: calc((128 / 16) * 1rem);
+  --spacing-footer: calc((54 / 16) * 1rem);
+  --spacing-xxsmall: 4px;
+  --spacing-xsmall: 8px;
+  --spacing-small: 16px;
+  --spacing-medium: 24px;
+  --spacing-big: 32px;
+  --spacing-xbig: 40px;
+  --spacing-xxbig: 48px;
+  --spacing-large: 64px;
+  --spacing-xlarge: 72px;
+  --spacing-xxlarge: 96px;
+  --spacing-huge: 120px;
+  --spacing-xhuge: 144px;
+  --spacing-xxhuge: 192px;
+
+  --spacing-small-x: 12px;
+  --spacing-small-y: 12px;
+  --spacing-medium-x: 24px;
+  --spacing-medium-y: 24px;
+  --spacing-large-x: 48px;
+  --spacing-large-y: 40px;
+  --section-margin-spacing-default-top: var(--spacing-small-y);
+  --section-margin-spacing-default-left: var(--spacing-small-x);
+
+  --site-content-width: 1232px;
+  --base-transition: all 0.3s ease 0s;
+
+  --midnight-blue: #252a2f;
+  --deep-gray-blue: #313c46;
+  --gray-blue: #516372;
+  --slate: #4d4d4d;
+  --deep-sage: #3d4e3c;
+  --sage: #667a66;
+  --cognac: #96674a;
+  --light-cognac: #ddab6d;
+  --white-smoke: #f7f7f7;
+  --sales-red: #9e2421;
+
+  --c-primary: #516372;
+  --c-primary-darkish: #313c46;
+  --c-primary-dark: #252a2f;
+  --c-body-copy: #4d4d4d;
+  --c-secondary-copy: #414b55;
+  --c-tertiary-copy: #3d4e3c;
+  --c-hero-primary: #252a2f;
+  --c-brand-name: #9a6a4c;
+  --c-hero-tertiary: #e2e5e8;
+  --c-dark-copy: #252a2e;
+  --c-gray: #e1e6ea;
+  --c-gray-light: #f7f7f7;
+  --c-gray-border: #e1e2e2;
+  --c-gray-border-dark: #c1c1c1;
+  --c-white: #fff;
+  --c-black: #000;
+  --c-dark: #222;
+  --c-offwhite: #f1f1f1;
+  --c-green: #667a66;
+  --c-error: #d00946;
+
+  --c-banner-drk: #101e49;
+  --c-banner-cart: #96674a;
+  --c-link-hover: #ddab6d;
+
+  --c-button-primary: #516372;
+  --c-button-primary-hover: #252a2f;
+  --c-button-secondary: #667a66;
+  --c-button-secondary-hover: #3d4e3c;
+  --c-button-tertiary: #f7f7f7;
+  --c-button-tertiary-hover: #e2e5e8;
+  --c-button-frosted-glass: color(sRGB 1 1 1 / 50%);
+  --c-button-frosted-glass-hover: #fff;
+  --c-button-text-cta: #252a2f;
+  --c-button-disabled: #b2b2b2;
+  --button-font-size: calc((13 / 16) * 1rem);
+  --button-after-icon-size: calc((8 / 16) * 1rem);
+
+  --light-color: #eee;
+  --color-brand-500: #454545;
+  --color-brand-600: #383838;
+  --color-neutral-50: #fff;
+  --color-neutral-300: #e8e8e8;
+  --color-neutral-400: #d6d6d6;
+  --color-neutral-500: #b8b8b8;
+  --color-neutral-700: #666;
+  --shape-border-radius-3: 24px;
+  --shape-border-width-1: 1px;
+  --shape-border-width-3: 2px;
+
+  --hvt-slate-color: #4d4d4d;
+  --hvt-sales-red-color: #9e2421;
+  --background-color: var(--color-neutral-50);
+  --type-fixed-font-family: "Roboto Mono", menlo, consolas, "Liberation Mono", monospace;
+  --type-body-1-default-font: normal normal 300 1.6rem/2.4rem var(--base-font-family);
+  --type-body-2-default-font: normal normal 300 1.4rem/2rem var(--base-font-family);
+  --type-body-2-default-letter-spacing: 0.04em;
+}
+
+@media (width >= 998px) {
+  :root {
+    --body-font-size: calc((18 / 16) * 1rem);
+    --heading-font-xxl: var(--fw-regular) 55px / 59px var(--ff-secondary);
+    --heading-font-xl: var(--fw-regular) 40px / 44px var(--ff-secondary);
+    --heading-font-l: var(--fw-semi-bold) 30px / 36px var(--ff-primary);
+    --heading-font-m: var(--fw-semi-bold) 20px / 24px var(--ff-primary);
+    --heading-font-s: var(--fw-regular) 15px / 24px var(--ff-primary);
+    --heading-font-xs: var(--fw-regular) 13px / 20px var(--ff-primary);
+    --custom-heading-font: var(--fw-regular) 30px / 34px var(--ff-secondary);
+    --label-font: var(--fw-semi-bold) 24px/30px var(--ff-primary);
+    --label-font-sm: var(--fw-semi-bold) 16px/20px var(--ff-primary);
+    --button-after-icon-size: calc((10 / 16) * 1rem);
+    --spacing-small-x: 24px;
+    --spacing-small-y: 12px;
+    --spacing-medium-x: 50px;
+    --spacing-medium-y: 24px;
+    --spacing-large-x: 74px;
+    --spacing-large-y: 50px;
+  }
+}

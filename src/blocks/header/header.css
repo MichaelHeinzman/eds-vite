@@ -1,0 +1,36 @@
+header .header {
+  background: #fff;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+header .header-content {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header .header-logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: inherit;
+}
+
+header nav ul {
+  display: flex;
+  gap: 1.5rem;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+header nav a {
+  color: inherit;
+  text-decoration: none;
+}

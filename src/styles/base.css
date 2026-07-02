@@ -1,0 +1,172 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: roboto-fallback;
+  size-adjust: 100.06%;
+  ascent-override: 95%;
+  src: local("Arial");
+}
+
+html {
+  text-size-adjust: 100%;
+}
+
+body,
+input,
+select {
+  font-size: var(--body-font-size);
+  line-height: var(--base-line-height);
+}
+
+body {
+  font: var(--type-body-1-default-font);
+  color: var(--c-body-copy);
+  font-family: var(--ff-primary);
+  font-weight: var(--fw-regular);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 100%;
+}
+
+body:not(.appear) {
+  display: none;
+}
+
+body.appear {
+  display: block;
+}
+
+@media (width <= 1024px) {
+  body.disable-scroll {
+    overflow: hidden;
+  }
+}
+
+main {
+  overflow: clip;
+}
+
+a,
+a:visited {
+  color: var(--c-body-copy);
+  transition: var(--base-transition);
+  line-height: 1;
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+*:focus-visible {
+  outline: 2px solid var(--color-neutral-400) !important;
+  outline-offset: 2px !important;
+}
+
+u {
+  text-underline-offset: 6px;
+}
+
+a > u,
+button.button > u {
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+main button {
+  border: 1px solid transparent;
+}
+
+button:not(.dropin-button) {
+  white-space: nowrap;
+}
+
+main input:hover {
+  border: 1px solid var(--color-neutral-700);
+}
+
+img,
+picture,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+main img {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+
+hr {
+  width: 100%;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  border: 0;
+  border-bottom: 1px solid var(--color-neutral-300);
+}
+
+code,
+pre,
+samp {
+  font: var(--type-body-2-default-font);
+  letter-spacing: var(--type-body-2-default-letter-spacing);
+  font-family: var(--type-fixed-font-family);
+}
+
+code,
+samp {
+  padding: 0.125em;
+}
+
+pre {
+  overflow: scroll;
+}
+
+main pre {
+  background-color: var(--color-neutral-300);
+  padding: 1em;
+  border-radius: 0.25em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+blockquote {
+  color: var(--c-black);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+main blockquote {
+  font-style: italic;
+  margin: 3rem;
+  text-indent: -1rem;
+  hanging-punctuation: first;
+}
+
+main blockquote p::before {
+  content: "“";
+  line-height: 0;
+}
+
+main blockquote p::after {
+  content: "”";
+  line-height: 0;
+}
+
+figcaption {
+  color: var(--c-primary);
+  font-family: var(--ff-primary);
+  font-weight: var(--fw-bold);
+}

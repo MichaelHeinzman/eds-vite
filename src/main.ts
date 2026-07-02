@@ -388,10 +388,7 @@ export function getSectionsToLoad(main: HTMLElement) {
     : [firstSection, lcpSection];
 }
 
-export async function loadPage() {
-  const main = document.querySelector<HTMLElement>("main");
-  if (!main) return;
-
+export async function loadEager(main: HTMLElement) {
   decorateMain(main);
 
   const sectionsToLoad = getSectionsToLoad(main);
@@ -402,8 +399,88 @@ export async function loadPage() {
   );
 
   document.body.classList.add("appear");
+}
 
+/**
+ * Builds a block DOM Element from a two dimensional array, string, or object
+ * @param {string} blockName name of the block
+ * @param {*} content two dimensional array or string or object of content
+ */
+function buildBlock(blockName: string, content: String): HTMLElement {
+  const table = Array.isArray(content) ? content : [[content]];
+  const blockEl = document.createElement("div");
+  // build image block nested div structure
+  blockEl.classList.add(blockName);
+  table.forEach((row) => {
+    const rowEl = document.createElement("div");
+    row.forEach((col: any) => {
+      const colEl = document.createElement("div");
+      const vals = col.elems ? col.elems : [col];
+      vals.forEach((val: any) => {
+        if (val) {
+          if (typeof val === "string") {
+            colEl.innerHTML += val;
+          } else {
+            colEl.appendChild(val);
+          }
+        }
+      });
+      rowEl.appendChild(colEl);
+    });
+    blockEl.appendChild(rowEl);
+  });
+  return blockEl;
+}
+
+export async function loadHeader(
+  header = document.querySelector("body > header"),
+) {
+  // Don't load header if loaded or loading.
+  if (
+    document.querySelector(
+      ".header.block[data-block-status='loaded'], .header.block[data-block-status='loading']",
+    ) ||
+    !header
+  ) {
+    return null;
+  }
+
+  const headerBlock = buildBlock("header", "");
+  header.append(headerBlock);
+  decorateBlock(headerBlock);
+  return loadBlock(headerBlock);
+}
+
+export async function loadFooter(
+  footer = document.querySelector("body > footer"),
+) {
+  if (
+    document.querySelector(
+      ".footer.block[data-block-status='loaded'], .footer.block[data-block-status='loading']",
+    ) ||
+    !footer
+  ) {
+    return null;
+  }
+
+  const footerBlock = buildBlock("footer", "");
+  footer.append(footerBlock);
+  decorateBlock(footerBlock);
+  return loadBlock(footerBlock);
+}
+
+export async function loadLazy(main: HTMLElement) {
+  await loadHeader();
   await loadSections(main);
+  await loadFooter();
+}
+
+export async function loadPage() {
+  const main = document.querySelector<HTMLElement>("main");
+  if (!main) return;
+
+  await loadEager(main);
+  await loadLazy(main);
 }
 
 loadPage();
