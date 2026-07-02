@@ -1,4 +1,3 @@
-import { render } from "preact";
 import "@styles/index.css";
 
 type BlockModule = {
@@ -408,5 +407,3 @@ export async function loadPage() {
 }
 
 loadPage();
-
-export { render };
