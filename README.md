@@ -42,6 +42,6 @@ npm run preview
 
 ## Philosophy
 
-EDS Preact preserves the Adobe Edge Delivery Services authoring experience while replacing the traditional runtime with a modern Vite-based architecture.
+EDS Vite preserves the Adobe Edge Delivery Services authoring experience while replacing the traditional runtime with a modern Vite-based architecture.
 
 Authors continue to author HTML, while blocks progressively enhance the markup using vanilla JavaScript or Preact when interactive state is required.
