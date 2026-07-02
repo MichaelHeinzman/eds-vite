@@ -1,0 +1,15 @@
+.call-to-action.block {
+  text-align: center;
+}
+
+.cta-content {
+  padding: 3rem 1.5rem;
+}
+
+.cta-button {
+  display: inline-flex;
+  margin-top: 1rem;
+  padding: 0.75rem 1.25rem;
+  text-decoration: none;
+  border: 1px solid currentColor;
+}

@@ -1,0 +1,8 @@
+.fragment-content {
+  padding: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.fragment-content a {
+  word-break: break-word;
+}

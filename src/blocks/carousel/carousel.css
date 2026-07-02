@@ -1,0 +1,8 @@
+.carousel-content {
+  padding: 2rem;
+}
+
+.carousel-content a {
+  display: inline-block;
+  margin-top: 0.5rem;
+}
