@@ -1,7 +1,6 @@
 // src/blocks/call-to-action/call-to-action.tsx
 import { render } from "preact";
 import { getLink, getRows, getText } from "@/utils/blocks";
-import "@blocks/call-to-action/call-to-action.css";
 
 type CTAProps = {
   eyebrowHtml: string;
@@ -14,12 +13,12 @@ type CTAProps = {
 
 function CallToAction(props: CTAProps) {
   return (
-    <section class={`cta-content ${props.backgroundColor} ${props.textColor}`}>
-      <div dangerouslySetInnerHTML={{ __html: props.eyebrowHtml }} />
+    <section class="cta-content spectrum-surface">
+      <div class="cta-copy" dangerouslySetInnerHTML={{ __html: props.eyebrowHtml }} />
 
       {props.buttonLabel && (
         <a
-          class="cta-button"
+          class="spectrum-Button spectrum-Button--accent"
           href={props.buttonHref}
           aria-label={props.buttonAriaLabel || props.buttonLabel}
         >
@@ -34,12 +33,17 @@ export default function decorate(block: HTMLElement) {
   const rows = getRows(block);
   const buttonCells = rows[3] || [];
 
+  const authoredHref = getLink(buttonCells[5]) || getText(buttonCells[5]);
+  const buttonHref = authoredHref && !authoredHref.startsWith("/") && !authoredHref.includes(":")
+    ? `/${authoredHref}`
+    : authoredHref;
+
   const props: CTAProps = {
     eyebrowHtml: rows[0]?.[0]?.innerHTML || "",
     textColor: getText(rows[1]?.[0]),
     backgroundColor: getText(rows[2]?.[0]),
     buttonLabel: getText(buttonCells[4]),
-    buttonHref: getLink(buttonCells[5]) || getText(buttonCells[5]),
+    buttonHref,
     buttonAriaLabel: getText(buttonCells[8]),
   };
 

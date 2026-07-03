@@ -1,4 +1,6 @@
 import "@styles/index.css";
+import "@spectrum-web-components/styles/global-elements.css";
+import { applySpectrumTheme } from "@/spectrum";
 
 type BlockModule = {
   default?: (block: HTMLElement) => void | Promise<void>;
@@ -61,7 +63,7 @@ export function decorateButtons(element: HTMLElement) {
       parent.childNodes.length === 1 &&
       ["P", "DIV"].includes(parent.tagName)
     ) {
-      a.className = "button";
+      a.className = "spectrum-Button spectrum-Button--primary";
       parent.classList.add("button-container");
     }
 
@@ -71,7 +73,7 @@ export function decorateButtons(element: HTMLElement) {
       grandparent?.childNodes.length === 1 &&
       grandparent.tagName === "P"
     ) {
-      a.className = "button primary";
+      a.className = "spectrum-Button spectrum-Button--accent";
       grandparent.classList.add("button-container");
     }
 
@@ -81,7 +83,7 @@ export function decorateButtons(element: HTMLElement) {
       grandparent?.childNodes.length === 1 &&
       grandparent.tagName === "P"
     ) {
-      a.className = "button secondary";
+      a.className = "spectrum-Button spectrum-Button--secondary";
       grandparent.classList.add("button-container");
     }
   });
@@ -433,7 +435,7 @@ function buildBlock(blockName: string, content: String): HTMLElement {
 }
 
 export async function loadHeader(
-  header = document.querySelector("body > header"),
+  header = document.querySelector("body header"),
 ) {
   // Don't load header if loaded or loading.
   if (
@@ -452,7 +454,7 @@ export async function loadHeader(
 }
 
 export async function loadFooter(
-  footer = document.querySelector("body > footer"),
+  footer = document.querySelector("body footer"),
 ) {
   if (
     document.querySelector(
@@ -483,4 +485,5 @@ export async function loadPage() {
   await loadLazy(main);
 }
 
+applySpectrumTheme();
 loadPage();

@@ -29,7 +29,7 @@
       "@scripts/*": ["./src/scripts/*"],
       "@services/*": ["./src/services/*"],
       "@styles/*": ["./src/styles/*"],
-      "@types/*": ["./src/types/*"],
+      "@models/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"]
     },
 

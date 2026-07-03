@@ -195,10 +195,10 @@ export default async function decorate(block: HTMLElement) {
         customButton.href = data.url || "#";
         customButton.title = data.label;
         customButton.textContent = data.label;
-        customButton.classList.add(
-          data.type.split("--")[1] || data.type,
-          "button",
-        );
+        const variant = data.type.includes("secondary")
+          ? "spectrum-Button--secondary"
+          : "spectrum-Button--accent";
+        customButton.classList.add("spectrum-Button", variant);
 
         p.className = "button-container";
         p.append(customButton);
@@ -313,9 +313,10 @@ export default async function decorate(block: HTMLElement) {
       video.play().catch(() => waitForUserGesture(video));
     });
 
-    const btn = document.createElement("button");
-    btn.type = "button";
+    const btn = document.createElement("sp-action-button");
     btn.title = "Play/Pause";
+    btn.setAttribute("label", "Play or pause background video");
+    btn.innerHTML = '<sp-icon-pause slot="icon"></sp-icon-pause>';
     btn.classList.add("playing");
 
     btn.addEventListener("click", () => {
@@ -326,11 +327,13 @@ export default async function decorate(block: HTMLElement) {
     video.addEventListener("play", () => {
       btn.classList.add("playing");
       btn.classList.remove("paused");
+      btn.innerHTML = '<sp-icon-pause slot="icon"></sp-icon-pause>';
     });
 
     video.addEventListener("pause", () => {
       btn.classList.add("paused");
       btn.classList.remove("playing");
+      btn.innerHTML = '<sp-icon-play slot="icon"></sp-icon-play>';
     });
 
     const wrapper = document.createElement("div");

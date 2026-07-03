@@ -1,0 +1,30 @@
+.minicart {
+  display: grid;
+  gap: 1rem;
+}
+
+.minicart-count {
+  font-weight: var(--fw-semi-bold, 600);
+}
+
+.minicart-items {
+  display: grid;
+  gap: 1rem;
+}
+
+.minicart-footer {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--c-gray-border, #e1e2e2);
+}
+
+.minicart-subtotal {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.minicart-loading {
+  padding: 1rem 0;
+}

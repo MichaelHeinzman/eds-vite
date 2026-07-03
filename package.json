@@ -10,6 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@spectrum-web-components/action-button": "^1.12.1",
+    "@spectrum-web-components/button": "^1.12.1",
+    "@spectrum-web-components/card": "^1.12.1",
+    "@spectrum-web-components/dialog": "^1.12.1",
+    "@spectrum-web-components/divider": "^1.12.1",
+    "@spectrum-web-components/icon": "^1.12.1",
+    "@spectrum-web-components/icons-workflow": "^1.12.1",
+    "@spectrum-web-components/overlay": "^1.12.1",
+    "@spectrum-web-components/progress-circle": "^1.12.1",
+    "@spectrum-web-components/theme": "^1.12.1",
+    "@tanstack/query-core": "^5.101.2",
     "preact": "^10.29.3"
   },
   "devDependencies": {

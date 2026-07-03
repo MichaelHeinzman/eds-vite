@@ -42,7 +42,10 @@ function decorateButton(button: HTMLElement | undefined, index: number) {
 
   anchor.href = href;
   anchor.className = "";
-  anchor.classList.add("button", buttonType);
+  const spectrumVariant = buttonType === "cta"
+    ? "spectrum-Button--accent"
+    : "spectrum-Button--secondary";
+  anchor.classList.add("spectrum-Button", spectrumVariant);
 
   if (buttonColor && isTextLinkCTA) {
     anchor.dataset.textColor = buttonColor;
@@ -209,19 +212,23 @@ function decorateVideo(videoContainer: HTMLElement) {
     buttonWrapper = document.createElement("div");
     buttonWrapper.className = "commerce-video-placeholder-play-pause";
 
-    const playPauseButton = document.createElement("button");
-    playPauseButton.type = "button";
+    const playPauseButton = document.createElement("sp-action-button");
     playPauseButton.ariaLabel = "Toggle Play/Pause";
+    playPauseButton.innerHTML = '<sp-icon-play slot="icon"></sp-icon-play>';
     playPauseButton.classList.add("paused");
 
     playPauseButton.addEventListener("click", () => {
       if (videoElement.paused) {
         videoElement
           .play()
-          .then(() => playPauseButton.classList.remove("paused"));
+          .then(() => {
+            playPauseButton.classList.remove("paused");
+            playPauseButton.innerHTML = '<sp-icon-pause slot="icon"></sp-icon-pause>';
+          });
       } else {
         videoElement.pause();
         playPauseButton.classList.add("paused");
+        playPauseButton.innerHTML = '<sp-icon-play slot="icon"></sp-icon-play>';
       }
     });
 
