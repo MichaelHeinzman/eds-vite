@@ -3,11 +3,12 @@ import type { CartItem as CartItemType } from "@models/cart";
 type CartItemProps = {
   item: CartItemType;
   compact?: boolean;
+  priority?: boolean;
   onQuantityChange?: (quantity: number) => void;
   onRemove?: () => void;
 };
 
-export function CartItem({ item, compact = false, onQuantityChange, onRemove }: CartItemProps) {
+export function CartItem({ item, compact = false, priority = false, onQuantityChange, onRemove }: CartItemProps) {
   const initials = item.name.split(" ").map((word) => word[0]).slice(0, 2).join("");
 
   return (
@@ -18,7 +19,8 @@ export function CartItem({ item, compact = false, onQuantityChange, onRemove }: 
           <img
             src={item.image}
             alt=""
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : "auto"}
             onError={(event) => { event.currentTarget.style.display = "none"; }}
           />
         ) : null}

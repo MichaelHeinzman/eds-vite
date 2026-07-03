@@ -1,7 +1,6 @@
 import "@styles/index.css";
 import "@spectrum-web-components/styles/global-elements.css";
 import { applySpectrumTheme } from "@/spectrum";
-import { loadMockPage } from "@/mocks/pages";
 
 type BlockModule = {
   default?: (block: HTMLElement) => void | Promise<void>;
@@ -284,12 +283,20 @@ export async function loadBlock(block: HTMLElement) {
   return block;
 }
 
+export function prioritizeFirstImage(root: ParentNode) {
+  const image = root.querySelector<HTMLImageElement>("img");
+  if (image) {
+    image.loading = "eager";
+    image.fetchPriority = "high";
+  }
+  return image;
+}
+
 export async function waitForFirstImage(section: HTMLElement) {
-  const image = section.querySelector<HTMLImageElement>("img");
+  const image = prioritizeFirstImage(section);
 
   await new Promise<void>((resolve) => {
     if (image && !image.complete) {
-      image.loading = "eager";
       image.addEventListener("load", () => resolve(), { once: true });
       image.addEventListener("error", () => resolve(), { once: true });
     } else {
@@ -310,7 +317,7 @@ export async function loadSection(
 
   const blocks = [...section.querySelectorAll<HTMLElement>("div.block")];
 
-  await Promise.all(blocks.map((block) => loadBlock(block)));
+  for (const block of blocks) await loadBlock(block);
 
   if (section.classList.contains("grid-container")) {
     const updatedBlocks = [
@@ -395,11 +402,11 @@ export async function loadEager(main: HTMLElement) {
   decorateMain(main);
 
   const sectionsToLoad = getSectionsToLoad(main);
+  prioritizeFirstImage(main);
+  sectionsToLoad.forEach(prioritizeFirstImage);
   sectionsToLoad.forEach(preloadVideoFromSection);
 
-  await Promise.allSettled(
-    sectionsToLoad.map((section) => loadSection(section, waitForFirstImage)),
-  );
+  for (const section of sectionsToLoad) await loadSection(section, waitForFirstImage);
 
   document.body.classList.add("appear");
 }
@@ -487,5 +494,4 @@ export async function loadPage() {
 }
 
 applySpectrumTheme();
-loadMockPage();
 loadPage();

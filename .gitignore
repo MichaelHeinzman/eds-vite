@@ -12,6 +12,15 @@ dist
 dist-ssr
 *.local
 
+# Generated multi-page Vite HTML entries
+/docs.html
+/blocks.html
+/github.html
+/cart.html
+/commerce-settings.html
+/products.html
+/product.html
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

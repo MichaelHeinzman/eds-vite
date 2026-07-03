@@ -12,11 +12,12 @@ The project preserves EDS semantic HTML authoring and progressive block enhancem
 - Dynamic block loading through `import.meta.glob`
 - EDS-style section and block decoration
 - Responsive images, video, and media preloading
-- Local page fixtures for development without an EDS backend
+- Real EDS-authored HTML entry documents generated for each local route
 - Adobe Commerce integration with a provider boundary that remains extensible
-- Vercel SPA routing for direct access to mock routes
+- Vercel static-document rewrites for direct access to EDS routes
 - Flash prevention while authored blocks are loading
 - Layout-matched loading skeletons for the product list, product detail, and cart pages
+- Eager, high-priority loading for likely LCP images and awaited sequential block decoration
 
 ## Local pages
 
@@ -31,7 +32,9 @@ The project preserves EDS semantic HTML authoring and progressive block enhancem
 | `/products/:id` | `src/mocks/pages/product.html` | Dynamic product detail page |
 | `/commerce-settings` | `src/mocks/pages/commerce-settings.html` | Adobe Commerce connection settings |
 
-Non-home fixtures are loaded by `src/mocks/pages.ts` before EDS decoration begins. Each fixture uses the same semantic section and block structure expected from authored EDS content.
+The HTML fragments in `src/mocks/pages/` are the authored source. `scripts/generate-static-pages.mjs` places each fragment into the shared `index.html` document shell before development or production builds. Vite then builds every document as a separate HTML entry. Vercel only rewrites clean URLs to those static documents; it does not act as the content backend or replace HTML in the browser.
+
+`/products/:sku` rewrites to the shared `product.html` entry. The product-page block reads the canonical SKU from the original browser URL, so one authored PDP document supports every product.
 
 ## Commerce backends
 
@@ -89,8 +92,7 @@ src/
   components/             Shared Preact components
   mocks/
     commerce/             Backend-shaped commerce fixtures
-    pages/                Authored page fixtures
-    pages.ts              Local route-to-fixture mapping
+    pages/                Authored EDS page fragments
   services/               Data access and backend adapters
   styles/                 Global layout and application CSS
   types/                  UI and backend contracts
@@ -113,7 +115,9 @@ npm run build
 npm run preview
 ```
 
-`vercel.json` rewrites application routes to `index.html`, allowing direct navigation and refreshes on `/docs`, `/blocks`, `/github`, and `/cart`.
+`npm run build` generates and bundles one HTML entry per route. `vercel.json` maps clean URLs to those documents, including the dynamic `/products/:sku` pattern. Every response therefore contains its authored EDS HTML before JavaScript runs.
+
+> **Demo hosting only:** the routes in `vercel.json` exist solely to host this repository's local EDS page fixtures on Michael's Vercel deployment. Remove `vercel.json` and the static-page rewrite configuration when connecting the project to a real Adobe Edge Delivery Services backend. EDS should own page routing and authored HTML in that environment.
 
 ## Block lifecycle
 
@@ -134,12 +138,15 @@ export default async function decorate(block: HTMLElement) {
 }
 ```
 
-## Adding a mock page
+## Adding a static EDS page
 
-1. Create an EDS-shaped HTML fixture under `src/mocks/pages/`.
-2. Import and register it in `src/mocks/pages.ts`.
-3. Add the route to the header if it should be navigable.
-4. Update this README with the route and purpose.
+1. Create an EDS-shaped HTML fragment under `src/mocks/pages/`.
+2. Register it in `scripts/generate-static-pages.mjs`.
+3. Add its generated document to the Vite input map and local route map in `vite.config.ts`.
+4. Add the production rewrite to `vercel.json`.
+5. Add the route to the header when it should be navigable, then update this README.
+
+These steps describe the repository's standalone demo mode. Do not add or retain Vercel page rewrites in a production EDS integration; let EDS resolve the authored route instead.
 
 ## Documentation policy
 

@@ -13,7 +13,7 @@
   .app-theme { display: block; min-height: 100vh; }
   body.modal-open { overflow: hidden; }
   main { display: flex; flex-direction: column; gap: clamp(20px, 3vw, 40px); min-height: 60vh; padding-block: clamp(20px, 3vw, 40px); }
-  .block[data-block-status="initialized"], .block[data-block-status="loading"] { visibility: hidden; }
+  .block[data-block-status="initialized"], .block[data-block-status="loading"]:not([data-block-loading-ui]) { visibility: hidden; }
   .block[data-block-status="loaded"], .block[data-block-status="error"] { visibility: visible; }
   main .section { width: 100%; margin-inline: auto; max-width: 1440px; padding: clamp(32px, 5vw, 72px); }
   main .section:first-child { margin-top: calc(clamp(20px, 3vw, 40px) * -1); }

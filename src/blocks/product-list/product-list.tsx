@@ -1,5 +1,5 @@
 import { render } from "preact";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
 
 import { ProductCard } from "@components/product-card/product-card";
 import { ProductGridSkeleton } from "@components/loading-skeleton/loading-skeleton";
@@ -8,24 +8,11 @@ import type { Product } from "@/types/catalog";
 
 type SortOrder = "featured" | "price-asc" | "price-desc" | "name";
 
-function ProductList() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+type ProductListProps = { products: Product[]; error?: string };
+
+function ProductList({ products, error = "" }: ProductListProps) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortOrder>("featured");
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    let mounted = true;
-    getProducts().then((data) => {
-      if (mounted) setProducts(data);
-    }).catch((reason: unknown) => {
-      if (mounted) setError(reason instanceof Error ? reason.message : "Unable to load products.");
-    }).finally(() => {
-      if (mounted) setLoading(false);
-    });
-    return () => { mounted = false; };
-  }, []);
 
   const visibleProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -50,12 +37,20 @@ function ProductList() {
         <label><span>Search products</span><input type="search" value={query} placeholder="Search by name, category, or SKU" onInput={(event) => setQuery(event.currentTarget.value)} /></label>
         <label><span>Sort by</span><select value={sort} onChange={(event) => setSort(event.currentTarget.value as SortOrder)}><option value="featured">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="name">Name</option></select></label>
       </div>
-      {loading ? <div class="skeleton-loading" role="status" aria-label="Loading products"><ProductGridSkeleton /></div> : null}
-      {!loading && error ? <div class="catalog-empty"><h2>Catalog unavailable</h2><p>{error}</p><a href="/commerce-settings">Configure Adobe Commerce</a></div> : null}
-      {!loading && visibleProducts.length ? <div class="product-grid">{visibleProducts.map((product) => <ProductCard key={product.id} product={product} />)}</div> : null}
-      {!loading && !error && !visibleProducts.length ? <div class="catalog-empty"><h2>No products found</h2><p>Try a different search.</p></div> : null}
+      {error ? <div class="catalog-empty"><h2>Catalog unavailable</h2><p>{error}</p><a href="/commerce-settings">Configure Adobe Commerce</a></div> : null}
+      {!error && visibleProducts.length ? <div class="product-grid">{visibleProducts.map((product, index) => <ProductCard key={product.id} product={product} priority={index === 0} />)}</div> : null}
+      {!error && !visibleProducts.length ? <div class="catalog-empty"><h2>No products found</h2><p>Try a different search.</p></div> : null}
     </div>
   );
 }
 
-export default function decorate(block: HTMLElement) { render(<ProductList />, block); }
+export default async function decorate(block: HTMLElement) {
+  block.dataset.blockLoadingUi = "true";
+  render(<div class="skeleton-loading" role="status" aria-label="Loading products"><ProductGridSkeleton /></div>, block);
+  try {
+    render(<ProductList products={await getProducts()} />, block);
+  } catch (reason) {
+    render(<ProductList products={[]} error={reason instanceof Error ? reason.message : "Unable to load products."} />, block);
+  }
+  delete block.dataset.blockLoadingUi;
+}

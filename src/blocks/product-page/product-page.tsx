@@ -1,24 +1,14 @@
 import { render } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 
 import { addProductToCart } from "@services/cart";
 import { getProduct } from "@services/products";
 import { ProductPageSkeleton } from "@components/loading-skeleton/loading-skeleton";
 import type { Product } from "@/types/catalog";
 
-function ProductPage() {
-  const [product, setProduct] = useState<Product | null | undefined>();
+function ProductPage({ product }: { product: Product | null }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
-  const id = decodeURIComponent(window.location.pathname.split("/").filter(Boolean).at(-1) || "");
-
-  useEffect(() => {
-    let mounted = true;
-    getProduct(id).then((data) => { if (mounted) setProduct(data); }).catch(() => { if (mounted) setProduct(null); });
-    return () => { mounted = false; };
-  }, [id]);
-
-  if (product === undefined) return <div class="skeleton-loading" role="status" aria-label="Loading product"><ProductPageSkeleton /></div>;
   if (product === null) return <div class="catalog-empty"><h1>Product not found</h1><a href="/products">Return to products</a></div>;
 
   const initials = product.name.split(" ").map((word) => word[0]).slice(0, 2).join("");
@@ -32,7 +22,7 @@ function ProductPage() {
     <div class="product-detail-page">
       <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>›</span><a href="/products">Products</a><span>›</span><span>{product.name}</span></nav>
       <div class="product-detail-layout">
-        <div class="product-detail-media"><span>{initials}</span>{product.image ? <img src={product.image} alt={product.name} /> : null}</div>
+        <div class="product-detail-media"><span>{initials}</span>{product.image ? <img src={product.image} alt={product.name} loading="eager" fetchPriority="high" /> : null}</div>
         <div class="product-detail-info">
           <p class="page-eyebrow">{product.category}</p>
           <h1>{product.name}</h1>
@@ -49,4 +39,14 @@ function ProductPage() {
   );
 }
 
-export default function decorate(block: HTMLElement) { render(<ProductPage />, block); }
+export default async function decorate(block: HTMLElement) {
+  const id = decodeURIComponent(window.location.pathname.split("/").filter(Boolean).at(-1) || "");
+  block.dataset.blockLoadingUi = "true";
+  render(<div class="skeleton-loading" role="status" aria-label="Loading product"><ProductPageSkeleton /></div>, block);
+  try {
+    render(<ProductPage product={await getProduct(id)} />, block);
+  } catch {
+    render(<ProductPage product={null} />, block);
+  }
+  delete block.dataset.blockLoadingUi;
+}

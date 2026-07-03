@@ -22,17 +22,16 @@ const navItems = [
   { href: "/github", label: "GitHub" },
 ];
 
-export const Header = () => {
+export const Header = ({ initialCartCount = 0 }: { initialCartCount?: number }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [MiniCart, setMiniCart] = useState<MiniCartComponent | null>(null);
-  const [cartCount, setCartCount] = useState(0);
+  const [cartCount, setCartCount] = useState(initialCartCount);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const currentPath = window.location.pathname;
 
   useEffect(() => {
     let mounted = true;
     const unsubscribe = subscribeCart((cart) => { if (mounted) setCartCount(cart.itemCount); });
-    getCart().then((cart) => { if (mounted) setCartCount(cart.itemCount); }).catch(() => { if (mounted) setCartCount(0); });
     return () => { mounted = false; unsubscribe(); };
   }, []);
 
@@ -97,6 +96,7 @@ export const Header = () => {
   );
 };
 
-export default function decorate(block: HTMLElement) {
-  render(<Header />, block);
+export default async function decorate(block: HTMLElement) {
+  const cart = await getCart().catch(() => null);
+  render(<Header initialCartCount={cart?.itemCount ?? 0} />, block);
 }

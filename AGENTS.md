@@ -132,6 +132,10 @@ data-block-status
 
 appropriately.
 
+Block decorators that start initial data requests must return a promise and await those requests. Render loading UI before awaiting when feedback is needed. The runtime loads blocks and sections sequentially so an awaited decorator completes before the next block begins.
+
+Likely LCP images—especially the first meaningful image in an eager section—must use `loading="eager"` and `fetchpriority="high"`. Below-the-fold imagery should remain lazy.
+
 ---
 
 # Section Decoration
@@ -235,11 +239,15 @@ Adobe Spectrum Web Components is the project component library. Prefer Spectrum 
 
 # Mock Pages
 
-Local pages without an EDS backend live in `src/mocks/pages/` and are registered in `src/mocks/pages.ts`.
+Local authored EDS page fragments live in `src/mocks/pages/`.
+
+Static route documents are generated from `src/mocks/pages/` with `scripts/generate-static-pages.mjs`. New routes must also be registered as Vite HTML inputs, local development rewrites, and Vercel rewrites. Do not reintroduce client-side `main.innerHTML` page replacement.
+
+The Vercel route map is demo-only scaffolding for this repository. Document that it must be removed when a real EDS backend supplies routing and authored HTML.
 
 - `/` continues to use the authored markup in `index.html`.
-- Mock fixtures must use EDS-shaped semantic HTML.
-- Load fixtures before calling `loadPage()`.
+- Page fragments must use EDS-shaped semantic HTML.
+- The server response must contain the authored page HTML before `loadPage()` runs.
 - Update the README route table whenever a page is added, removed, or renamed.
 
 ---

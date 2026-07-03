@@ -35,15 +35,16 @@ npm run preview</code></pre>
 
     <h2>Page lifecycle</h2>
     <ol class="docs-steps">
-      <li><strong>Load authored content.</strong> The homepage comes from <code>index.html</code>; local routes use fixtures from <code>src/mocks/pages</code>.</li>
+      <li><strong>Load authored content.</strong> The homepage comes from <code>index.html</code>; each local route receives its own generated HTML document containing the fragment from <code>src/mocks/pages</code>.</li>
       <li><strong>Decorate the page.</strong> The runtime identifies sections, metadata, buttons, icons, and block wrappers.</li>
       <li><strong>Load eager content.</strong> The first meaningful section and its media are prioritized for rendering.</li>
       <li><strong>Load blocks.</strong> Each block module progressively enhances its authored markup and updates <code>data-block-status</code>.</li>
       <li><strong>Load lazy content.</strong> Remaining sections, the header, and the footer complete after the critical page content.</li>
     </ol>
 
-    <h2>Mocking pages without an EDS backend</h2>
-    <p>Each mock is ordinary EDS-shaped HTML. Add a fixture under <code>src/mocks/pages</code>, register its path in <code>src/mocks/pages.ts</code>, and navigate to that route. Vite serves the application shell while the mock loader injects the correct page before decoration.</p>
+    <h2>Serving pages without an EDS backend</h2>
+    <p>Each page source is ordinary EDS-shaped HTML. The page generator places it into the shared document shell, Vite builds it as a real HTML entry, and Vercel maps the clean route to that static document. No client-side HTML injection is used.</p>
+    <aside class="docs-callout"><strong>Remove the Vercel routes for real EDS projects.</strong><p>The <code>vercel.json</code> rewrites are included only for Michael's free demo deployment. When an Adobe Edge Delivery Services backend is connected, remove that file and the demo static-route mapping so EDS owns page routing and returns the authored HTML.</p></aside>
     <pre><code>&lt;div&gt;
   &lt;div class="default-content"&gt;
     &lt;h1&gt;Page heading&lt;/h1&gt;

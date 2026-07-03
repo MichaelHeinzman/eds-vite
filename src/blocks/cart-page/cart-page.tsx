@@ -6,21 +6,14 @@ import { CartPageSkeleton } from "@components/loading-skeleton/loading-skeleton"
 import { getCart, removeCartItem, subscribeCart, updateCartItem } from "@services/cart";
 import type { Cart } from "@models/cart";
 
-function CartPage() {
-  const [cart, setCart] = useState<Cart | null>(null);
+function CartPage({ initialCart }: { initialCart: Cart }) {
+  const [cart, setCart] = useState(initialCart);
 
   useEffect(() => {
     let mounted = true;
     const unsubscribe = subscribeCart((data) => { if (mounted) setCart(data); });
-    getCart().then((data) => {
-      if (mounted) setCart(data);
-    });
     return () => { mounted = false; unsubscribe(); };
   }, []);
-
-  if (!cart) {
-    return <div class="skeleton-loading" role="status" aria-label="Loading your cart"><CartPageSkeleton /></div>;
-  }
 
   const delivery = 0;
   const estimatedTax = Math.round(cart.subtotal * 0.06);
@@ -38,7 +31,7 @@ function CartPage() {
 
       <div class="cart-page-layout">
         <section class="cart-page-items" aria-label="Cart items">
-          {cart.items.map((item) => <CartItem key={item.id} item={item} onQuantityChange={(quantity) => updateCartItem(item.id, quantity)} onRemove={() => removeCartItem(item.id)} />)}
+          {cart.items.map((item, index) => <CartItem key={item.id} item={item} priority={index === 0} onQuantityChange={(quantity) => updateCartItem(item.id, quantity)} onRemove={() => removeCartItem(item.id)} />)}
           {!cart.items.length ? <div class="empty-cart"><h2>Your cart is empty</h2><p>Add something from the catalog to see the full flow.</p><a href="/products">Browse products</a></div> : null}
           <div class="delivery-note">
             <strong>Free local delivery</strong>
@@ -64,6 +57,13 @@ function CartPage() {
   );
 }
 
-export default function decorate(block: HTMLElement) {
-  render(<CartPage />, block);
+export default async function decorate(block: HTMLElement) {
+  block.dataset.blockLoadingUi = "true";
+  render(<div class="skeleton-loading" role="status" aria-label="Loading your cart"><CartPageSkeleton /></div>, block);
+  try {
+    render(<CartPage initialCart={await getCart()} />, block);
+  } catch {
+    render(<div class="catalog-empty"><h1>Cart unavailable</h1><p>Unable to load your Adobe Commerce cart.</p></div>, block);
+  }
+  delete block.dataset.blockLoadingUi;
 }

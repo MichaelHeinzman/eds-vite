@@ -1,11 +1,43 @@
 import { defineConfig } from "vite";
+import type { Plugin, PreviewServer, ViteDevServer } from "vite";
 import preact from "@preact/preset-vite";
 import path from "node:path";
 import { constants } from "node:zlib";
 import { compression, defineAlgorithm } from "vite-plugin-compression2";
 
+const staticRouteEntries: Record<string, string> = {
+  "/docs": "/docs.html",
+  "/blocks": "/blocks.html",
+  "/github": "/github.html",
+  "/cart": "/cart.html",
+  "/commerce-settings": "/commerce-settings.html",
+  "/products": "/products.html",
+};
+
+function rewriteStaticPage(requestUrl = "/") {
+  const [pathname, query = ""] = requestUrl.split("?");
+  const normalizedPath = pathname.replace(/\/+$/, "") || "/";
+  const destination = staticRouteEntries[normalizedPath]
+    || (normalizedPath.startsWith("/products/") ? "/product.html" : undefined);
+  return destination ? `${destination}${query ? `?${query}` : ""}` : requestUrl;
+}
+
+function installStaticPageRoutes(server: ViteDevServer | PreviewServer) {
+  server.middlewares.use((request, _response, next) => {
+    request.url = rewriteStaticPage(request.url);
+    next();
+  });
+}
+
+const staticPageRoutesPlugin: Plugin = {
+  name: "eds-static-page-routes",
+  configureServer: installStaticPageRoutes,
+  configurePreviewServer: installStaticPageRoutes,
+};
+
 export default defineConfig(({ mode }) => ({
   plugins: [
+    staticPageRoutesPlugin,
     preact(),
 
     compression({
@@ -59,6 +91,16 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 1000,
 
     rolldownOptions: {
+      input: {
+        index: path.resolve(__dirname, "index.html"),
+        docs: path.resolve(__dirname, "docs.html"),
+        blocks: path.resolve(__dirname, "blocks.html"),
+        github: path.resolve(__dirname, "github.html"),
+        cart: path.resolve(__dirname, "cart.html"),
+        "commerce-settings": path.resolve(__dirname, "commerce-settings.html"),
+        products: path.resolve(__dirname, "products.html"),
+        product: path.resolve(__dirname, "product.html"),
+      },
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {

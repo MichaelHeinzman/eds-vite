@@ -5,8 +5,9 @@
   "type": "module",
   "description": "A modern Vite runtime for Adobe Edge Delivery Services.",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "generate:pages": "node scripts/generate-static-pages.mjs",
+    "dev": "npm run generate:pages && vite",
+    "build": "tsc -b && npm run generate:pages && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
