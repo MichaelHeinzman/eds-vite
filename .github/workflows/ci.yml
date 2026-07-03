@@ -6,8 +6,9 @@ on:
   pull_request:
 
 jobs:
-  build:
+  test-and-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
@@ -18,4 +19,22 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npm run build
+      - name: Run unit and component tests
+        run: npm run test
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build production application
+        run: npm run build
+
+      - name: Run desktop and mobile end-to-end tests
+        run: npm run test:e2e
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

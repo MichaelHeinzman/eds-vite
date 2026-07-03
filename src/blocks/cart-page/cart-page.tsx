@@ -1,19 +1,19 @@
 import { render } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 
 import { CartItem } from "@components/cart-item/cart-item";
 import { CartPageSkeleton } from "@components/loading-skeleton/loading-skeleton";
-import { getCart, removeCartItem, subscribeCart, updateCartItem } from "@services/cart";
-import type { Cart } from "@models/cart";
+import { getCart, useCart, useRemoveCartItem, useUpdateCartItem } from "@services/cart";
+import { CommerceQueryProvider } from "@services/query-client";
 
-function CartPage({ initialCart }: { initialCart: Cart }) {
-  const [cart, setCart] = useState(initialCart);
+function CartPage() {
+  const { data: cart, error, isPending } = useCart();
+  const updateMutation = useUpdateCartItem();
+  const removeMutation = useRemoveCartItem();
+  const [checkoutMessage, setCheckoutMessage] = useState("");
 
-  useEffect(() => {
-    let mounted = true;
-    const unsubscribe = subscribeCart((data) => { if (mounted) setCart(data); });
-    return () => { mounted = false; unsubscribe(); };
-  }, []);
+  if (isPending) return <div class="skeleton-loading" role="status" aria-label="Loading your cart"><CartPageSkeleton /></div>;
+  if (error || !cart) return <div class="catalog-empty"><h1>Cart unavailable</h1><p>{error?.message || "Unable to load your Adobe Commerce cart."}</p></div>;
 
   const delivery = 0;
   const estimatedTax = Math.round(cart.subtotal * 0.06);
@@ -31,7 +31,7 @@ function CartPage({ initialCart }: { initialCart: Cart }) {
 
       <div class="cart-page-layout">
         <section class="cart-page-items" aria-label="Cart items">
-          {cart.items.map((item, index) => <CartItem key={item.id} item={item} priority={index === 0} onQuantityChange={(quantity) => updateCartItem(item.id, quantity)} onRemove={() => removeCartItem(item.id)} />)}
+          {cart.items.map((item, index) => <CartItem key={item.id} item={item} priority={index === 0} onQuantityChange={(quantity) => updateMutation.mutateAsync({ itemId: item.id, quantity })} onRemove={() => removeMutation.mutateAsync(item.id)} />)}
           {!cart.items.length ? <div class="empty-cart"><h2>Your cart is empty</h2><p>Add something from the catalog to see the full flow.</p><a href="/products">Browse products</a></div> : null}
           <div class="delivery-note">
             <strong>Free local delivery</strong>
@@ -48,7 +48,8 @@ function CartPage({ initialCart }: { initialCart: Cart }) {
           </dl>
           <sp-divider size="s" />
           <div class="order-total"><strong>Estimated total</strong><strong>${estimatedTotal.toLocaleString()}</strong></div>
-          <sp-button size="l">Proceed to checkout</sp-button>
+          <sp-button size="l" onClick={() => setCheckoutMessage("Checkout is not connected in this demo yet.")}>Proceed to checkout</sp-button>
+          {checkoutMessage ? <p class="checkout-status" role="status">{checkoutMessage}</p> : null}
           <a href="/">Continue shopping</a>
           <small>This is local mock data. No payment or order will be submitted.</small>
         </aside>
@@ -60,10 +61,7 @@ function CartPage({ initialCart }: { initialCart: Cart }) {
 export default async function decorate(block: HTMLElement) {
   block.dataset.blockLoadingUi = "true";
   render(<div class="skeleton-loading" role="status" aria-label="Loading your cart"><CartPageSkeleton /></div>, block);
-  try {
-    render(<CartPage initialCart={await getCart()} />, block);
-  } catch {
-    render(<div class="catalog-empty"><h1>Cart unavailable</h1><p>Unable to load your Adobe Commerce cart.</p></div>, block);
-  }
+  await getCart().catch(() => undefined);
+  render(<CommerceQueryProvider><CartPage /></CommerceQueryProvider>, block);
   delete block.dataset.blockLoadingUi;
 }

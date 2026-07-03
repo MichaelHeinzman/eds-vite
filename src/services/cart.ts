@@ -1,7 +1,10 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
+
 import type { Cart } from "@/types/cart";
 import type { Product } from "@/types/catalog";
 import { isAdobeCommerceConfigured } from "@services/adobe-config";
 import { addRemoteAdobeCartItem, fetchRemoteAdobeCart, removeRemoteAdobeCartItem, resetRemoteAdobeCart, updateRemoteAdobeCartItem } from "@services/adobe-cart-api";
+import { commerceQueryClient, commerceQueryKeys, runCommerceMutation } from "@services/query-client";
 
 export const commerceBackends = ["adobe"] as const;
 export type CommerceBackend = (typeof commerceBackends)[number];
@@ -28,19 +31,70 @@ export async function fetchCart(): Promise<Cart> {
 }
 
 export function getCart() {
-  return fetchCart();
+  return commerceQueryClient.fetchQuery(cartQueryOptions());
+}
+
+function cartQueryOptions() {
+  return {
+    queryKey: commerceQueryKeys.cart(),
+    queryFn: fetchCart,
+    staleTime: 15_000,
+  };
+}
+
+export function useCart(enabled = true) {
+  return useQuery({ ...cartQueryOptions(), enabled });
 }
 
 export async function addProductToCart(product: Product, quantity = 1) {
-  return notifyCart(await addRemoteAdobeCartItem(product.sku, quantity));
+  const cart = await runCommerceMutation(
+    ["commerce", "adobe", "cart", "add"],
+    ({ sku, amount }: { sku: string; amount: number }) => addRemoteAdobeCartItem(sku, amount),
+    { sku: product.sku, amount: quantity },
+  );
+  return updateCartCache(cart);
 }
 
 export async function updateCartItem(itemId: string, quantity: number) {
-  return notifyCart(await updateRemoteAdobeCartItem(itemId, quantity));
+  const cart = await runCommerceMutation(
+    ["commerce", "adobe", "cart", "update"],
+    ({ id, amount }: { id: string; amount: number }) => updateRemoteAdobeCartItem(id, amount),
+    { id: itemId, amount: quantity },
+  );
+  return updateCartCache(cart);
 }
 
 export async function removeCartItem(itemId: string) {
-  return notifyCart(await removeRemoteAdobeCartItem(itemId));
+  const cart = await runCommerceMutation(
+    ["commerce", "adobe", "cart", "remove"],
+    (id: string) => removeRemoteAdobeCartItem(id),
+    itemId,
+  );
+  return updateCartCache(cart);
+}
+
+export function useAddProductToCart() {
+  return useMutation({
+    mutationKey: ["commerce", "adobe", "cart", "add"],
+    mutationFn: ({ product, quantity }: { product: Product; quantity: number }) => addRemoteAdobeCartItem(product.sku, quantity),
+    onSuccess: updateCartCache,
+  });
+}
+
+export function useUpdateCartItem() {
+  return useMutation({
+    mutationKey: ["commerce", "adobe", "cart", "update"],
+    mutationFn: ({ itemId, quantity }: { itemId: string; quantity: number }) => updateRemoteAdobeCartItem(itemId, quantity),
+    onSuccess: updateCartCache,
+  });
+}
+
+export function useRemoveCartItem() {
+  return useMutation({
+    mutationKey: ["commerce", "adobe", "cart", "remove"],
+    mutationFn: (itemId: string) => removeRemoteAdobeCartItem(itemId),
+    onSuccess: updateCartCache,
+  });
 }
 
 export function subscribeCart(listener: (cart: Cart) => void) {
@@ -52,7 +106,13 @@ export function subscribeCart(listener: (cart: Cart) => void) {
 export function resetCart() {
   resetRemoteAdobeCart();
   window.localStorage.removeItem(cartStorageKey());
-  return fetchCart();
+  commerceQueryClient.removeQueries({ queryKey: commerceQueryKeys.cart() });
+  return getCart();
+}
+
+function updateCartCache(cart: Cart) {
+  commerceQueryClient.setQueryData(commerceQueryKeys.cart(), cart);
+  return notifyCart(cart);
 }
 
 function notifyCart(cart: Cart) {

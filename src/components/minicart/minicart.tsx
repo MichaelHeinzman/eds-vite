@@ -1,9 +1,6 @@
-import { useEffect, useState } from "preact/hooks";
-
 import { CartItem } from "@components/cart-item/cart-item";
 import { Modal } from "@components/modal/modal";
-import { getCart, removeCartItem, subscribeCart, updateCartItem } from "@services/cart";
-import type { Cart } from "@models/cart";
+import { useCart, useRemoveCartItem, useUpdateCartItem } from "@services/cart";
 
 type MiniCartProps = {
   isOpen: boolean;
@@ -11,33 +8,24 @@ type MiniCartProps = {
 };
 
 export function MiniCart({ isOpen, onClose }: MiniCartProps) {
-  const [cart, setCart] = useState<Cart | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-    const unsubscribe = subscribeCart((data) => { if (mounted) setCart(data); });
-    if (isOpen) getCart().then((data) => { if (mounted) setCart(data); });
-
-    return () => {
-      mounted = false;
-      unsubscribe();
-    };
-  }, [isOpen]);
+  const { data: cart, error, isPending } = useCart(isOpen);
+  const updateMutation = useUpdateCartItem();
+  const removeMutation = useRemoveCartItem();
 
   return (
     <Modal isOpen={isOpen} title="Cart" position="right" onClose={onClose}>
-      {!cart ? (
+      {isPending ? (
         <div class="minicart-loading" aria-live="polite">
           <sp-progress-circle indeterminate size="l" />
           <span>Loading cart…</span>
         </div>
-      ) : (
+      ) : error || !cart ? <div class="empty-cart" role="alert"><h3>Cart unavailable</h3><p>{error?.message}</p></div> : (
         <div class="minicart">
           <p class="minicart-count">{cart.itemCount} {cart.itemCount === 1 ? "item" : "items"} in your cart</p>
 
           <div class="minicart-items">
             {cart.items.map((item) => (
-              <CartItem key={item.id} item={item} compact onQuantityChange={(quantity) => updateCartItem(item.id, quantity)} onRemove={() => removeCartItem(item.id)} />
+              <CartItem key={item.id} item={item} compact onQuantityChange={(quantity) => updateMutation.mutateAsync({ itemId: item.id, quantity })} onRemove={() => removeMutation.mutateAsync(item.id)} />
             ))}
             {!cart.items.length ? <div class="empty-cart"><h3>Your cart is empty</h3><a href="/products">Browse products</a></div> : null}
           </div>

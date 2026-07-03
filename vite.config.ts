@@ -14,7 +14,7 @@ const staticRouteEntries: Record<string, string> = {
   "/products": "/products.html",
 };
 
-function rewriteStaticPage(requestUrl = "/") {
+export function rewriteStaticPage(requestUrl = "/") {
   const [pathname, query = ""] = requestUrl.split("?");
   const normalizedPath = pathname.replace(/\/+$/, "") || "/";
   const destination = staticRouteEntries[normalizedPath]
@@ -59,6 +59,9 @@ export default defineConfig(({ mode }) => ({
 
   resolve: {
     alias: {
+      "react": path.resolve(__dirname, "./node_modules/preact/compat"),
+      "react-dom": path.resolve(__dirname, "./node_modules/preact/compat"),
+      "react/jsx-runtime": path.resolve(__dirname, "./node_modules/preact/jsx-runtime"),
       "@": path.resolve(__dirname, "./src"),
       "@assets": path.resolve(__dirname, "./src/assets"),
       "@blocks": path.resolve(__dirname, "./src/blocks"),

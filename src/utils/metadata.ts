@@ -14,3 +14,10 @@ export function toCamelCase(value: string) {
     letter.toUpperCase(),
   );
 }
+
+export function getMetadata(name: string, doc: Document = document) {
+  const attribute = name.includes(":") ? "property" : "name";
+  return [...doc.head.querySelectorAll<HTMLMetaElement>(`meta[${attribute}="${name}"]`)]
+    .map((meta) => meta.content)
+    .join(", ");
+}

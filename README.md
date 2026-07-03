@@ -18,6 +18,8 @@ The project preserves EDS semantic HTML authoring and progressive block enhancem
 - Flash prevention while authored blocks are loading
 - Layout-matched loading skeletons for the product list, product detail, and cart pages
 - Eager, high-priority loading for likely LCP images and awaited sequential block decoration
+- Vitest unit/component tests and Playwright desktop/mobile browser journeys
+- Responsive mobile navigation, compact commerce layouts, and visible pending/error feedback for cart mutations
 
 ## Local pages
 
@@ -84,11 +86,16 @@ The product listing and detail pages use `src/services/products.ts`. The service
 
 The header count, mini cart, product page, and full cart page synchronize through a lightweight browser event. UI components remain independent of Adobe response shapes so additional adapters can be registered later.
 
+## TanStack Query
+
+All Adobe GraphQL traffic is managed by the shared TanStack Query client and provider in `src/services/query-client.ts`. Preact blocks consume provider-neutral service hooks built with `useQuery` and `useMutation`; Vite maps the React adapter to `preact/compat`. Product and cart reads use configuration-aware query keys for caching and request deduplication. Cart writes update the cart query cache on success and expose their pending/error lifecycle directly to the UI. Saving or clearing Commerce configuration removes cached data from the previous backend context.
+
 ## Project structure
 
 ```text
 src/
-  main.ts                 EDS runtime and page bootstrap
+  aem.ts                  Typed EDS runtime primitives and Vite block loader
+  scripts.ts              Project decoration and page bootstrap
   spectrum.ts             Spectrum component registration and theme
   assets/                 Bundled icons and media
   blocks/                 Independently loaded EDS blocks
@@ -110,6 +117,22 @@ npm run dev
 ```
 
 Open `http://localhost:5173/`. Vite hot module replacement updates the in-app browser as files change.
+
+## Testing
+
+Vitest covers deterministic TypeScript and Preact behavior. Playwright runs production-build journeys in desktop Chromium and a Pixel 7 viewport, including horizontal-overflow checks and mobile navigation.
+
+```bash
+npm run test            # unit and component tests
+npm run test:watch      # Vitest watch mode
+npx playwright install chromium # one-time browser install
+npm run test:e2e        # desktop and mobile browser tests
+npm run test:all        # complete test suite
+```
+
+Async commerce controls disable repeat input and expose pending, success, and failure copy through live regions. This keeps slow Adobe Commerce mutations understandable to both visual and assistive-technology users.
+
+GitHub Actions runs Vitest, installs Playwright Chromium, creates the production build, and runs the desktop/mobile E2E suite for every pull request and every push to `main`. A failure in any stage fails the CI check; failed browser runs retain the Playwright report as a workflow artifact for seven days.
 
 ## Production
 

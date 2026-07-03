@@ -81,7 +81,17 @@ button.button > u {
 
 button {
   font: inherit;
+  transition: transform 100ms ease, filter 140ms ease, opacity 140ms ease;
 }
+
+button:not(:disabled):active,
+a.button:active,
+.spectrum-Button:active {
+  transform: translateY(1px) scale(.98);
+  filter: brightness(.9);
+}
+
+button:disabled { cursor: wait; opacity: .68; }
 
 main button {
   border: 1px solid transparent;

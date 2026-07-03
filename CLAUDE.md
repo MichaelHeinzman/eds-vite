@@ -1,1 +1,1 @@
-Read from AGENTS.md file.
+see @AGENTS.md

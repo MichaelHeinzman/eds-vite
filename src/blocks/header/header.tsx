@@ -1,10 +1,8 @@
 import { render } from "preact";
-import { useEffect, useState } from "preact/hooks";
+import { useState } from "preact/hooks";
 
-import {
-  getCart,
-  subscribeCart,
-} from "@services/cart";
+import { getCart, useCart } from "@services/cart";
+import { CommerceQueryProvider } from "@services/query-client";
 import { isAdobeCommerceConfigured } from "@services/adobe-config";
 import { Modal } from "@components/modal/modal";
 import { CommerceSettingsPanel } from "@blocks/commerce-settings/commerce-settings";
@@ -25,15 +23,13 @@ const navItems = [
 export const Header = ({ initialCartCount = 0 }: { initialCartCount?: number }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [MiniCart, setMiniCart] = useState<MiniCartComponent | null>(null);
-  const [cartCount, setCartCount] = useState(initialCartCount);
+  const cartQuery = useCart();
+  const cartCount = cartQuery.data?.itemCount ?? initialCartCount;
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isCartLoading, setIsCartLoading] = useState(false);
+  const [cartError, setCartError] = useState("");
+  const [isNavOpen, setIsNavOpen] = useState(false);
   const currentPath = window.location.pathname;
-
-  useEffect(() => {
-    let mounted = true;
-    const unsubscribe = subscribeCart((cart) => { if (mounted) setCartCount(cart.itemCount); });
-    return () => { mounted = false; unsubscribe(); };
-  }, []);
 
   function applySettings() { setIsSettingsOpen(false); window.location.reload(); }
 
@@ -41,10 +37,17 @@ export const Header = ({ initialCartCount = 0 }: { initialCartCount?: number }) 
     setIsCartOpen(true);
 
     if (!MiniCart) {
-      await getCart();
-
-      const mod = await import("@components/minicart/minicart");
-      setMiniCart(() => mod.MiniCart);
+      setIsCartLoading(true);
+      setCartError("");
+      try {
+        const mod = await import("@components/minicart/minicart");
+        setMiniCart(() => mod.MiniCart);
+      } catch {
+        setIsCartOpen(false);
+        setCartError("Unable to open the cart. Check your Commerce connection and try again.");
+      } finally {
+        setIsCartLoading(false);
+      }
     }
   }
 
@@ -60,7 +63,11 @@ export const Header = ({ initialCartCount = 0 }: { initialCartCount?: number }) 
           <span>EDS Vite</span>
         </a>
 
-        <nav aria-label="Primary Navigation">
+        <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded={isNavOpen} onClick={() => setIsNavOpen((open) => !open)}>
+          <span aria-hidden="true">{isNavOpen ? "×" : "☰"}</span>
+        </button>
+
+        <nav class={isNavOpen ? "open" : ""} aria-label="Primary Navigation">
           <ul>
             {navItems.map((item) => (
               <li key={item.href}>
@@ -81,11 +88,13 @@ export const Header = ({ initialCartCount = 0 }: { initialCartCount?: number }) 
           class="header-cart-button"
           aria-label={`Open cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`}
           aria-expanded={isCartOpen}
+          disabled={isCartLoading}
           onClick={openCart}
         >
           <sp-icon-shopping-cart slot="icon" />
-          Cart{cartCount ? ` (${cartCount})` : ""}
+          {isCartLoading ? "Loading…" : `Cart${cartCount ? ` (${cartCount})` : ""}`}
         </sp-action-button>
+        {cartError || cartQuery.error ? <span class="header-action-error" role="alert">{cartError || cartQuery.error?.message}</span> : null}
 
         {MiniCart && <MiniCart isOpen={isCartOpen} onClose={closeCart} />}
         <Modal isOpen={isSettingsOpen} title="Commerce backend" onClose={() => setIsSettingsOpen(false)}>
@@ -98,8 +107,8 @@ export const Header = ({ initialCartCount = 0 }: { initialCartCount?: number }) 
 
 export default async function decorate(block: HTMLElement) {
   block.dataset.blockLoadingUi = "true";
-  render(<Header />, block);
+  render(<CommerceQueryProvider><Header /></CommerceQueryProvider>, block);
   const cart = await getCart().catch(() => null);
-  render(<Header initialCartCount={cart?.itemCount ?? 0} />, block);
+  if (cart) render(<CommerceQueryProvider><Header initialCartCount={cart.itemCount} /></CommerceQueryProvider>, block);
   delete block.dataset.blockLoadingUi;
 }

@@ -1,10 +1,9 @@
-import { QueryClient } from "@tanstack/query-core";
+import { useQuery } from "@tanstack/react-query";
 
 import { getAdobeCommerceConfig, isAdobeCommerceConfigured } from "@services/adobe-config";
 import { adobeGraphQl, CATALOG_PRODUCT_QUERY, CATALOG_PRODUCTS_QUERY, CATALOG_VARIANTS_QUERY, CORE_PRODUCT_QUERY, CORE_PRODUCTS_QUERY } from "@services/adobe-graphql";
+import { commerceQueryClient, commerceQueryKeys } from "@services/query-client";
 import type { Product } from "@/types/catalog";
-
-const productQueryClient = new QueryClient();
 
 type CorePrice = { minimum_price: { final_price: { value: number; currency: string } } };
 type CoreVariantProduct = { sku: string; stock_status: string; small_image?: { url: string }; price_range: CorePrice };
@@ -65,17 +64,33 @@ async function fetchAdobeProduct(id: string) {
 }
 
 export function getProducts() {
-  return productQueryClient.ensureQueryData({
-    queryKey: ["commerce", "adobe", "products", getAdobeCommerceConfig().catalogMode],
+  return commerceQueryClient.ensureQueryData(productsQueryOptions());
+}
+
+function productsQueryOptions() {
+  return {
+    queryKey: commerceQueryKeys.products(),
     queryFn: fetchAdobeProducts,
     staleTime: 1000 * 60 * 5,
-  });
+  };
+}
+
+export function useProducts() {
+  return useQuery(productsQueryOptions());
 }
 
 export function getProduct(id: string) {
-  return productQueryClient.ensureQueryData({
-    queryKey: ["commerce", "adobe", "product", id, getAdobeCommerceConfig().catalogMode],
+  return commerceQueryClient.ensureQueryData(productQueryOptions(id));
+}
+
+function productQueryOptions(id: string) {
+  return {
+    queryKey: commerceQueryKeys.product(id),
     queryFn: () => fetchAdobeProduct(id),
     staleTime: 1000 * 60 * 5,
-  });
+  };
+}
+
+export function useProduct(id: string) {
+  return useQuery(productQueryOptions(id));
 }

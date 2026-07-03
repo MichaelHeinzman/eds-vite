@@ -2,6 +2,7 @@ import { render } from "preact";
 import { useState } from "preact/hooks";
 
 import { clearAdobeCommerceConfig, getAdobeCommerceConfig, isAdobeCommerceConfigured, saveAdobeCommerceConfig } from "@services/adobe-config";
+import { clearCommerceQueryCache } from "@services/query-client";
 import type { AdobeCatalogMode, AdobeCommerceConfig } from "@/types/adobe-config";
 
 type Props = { onComplete?: () => void; embedded?: boolean };
@@ -18,12 +19,14 @@ export function CommerceSettingsPanel({ onComplete, embedded = false }: Props) {
   function submit(event: Event) {
     event.preventDefault();
     saveAdobeCommerceConfig(config);
+    clearCommerceQueryCache();
     setSaved(true);
     onComplete?.();
   }
 
   function clear() {
     clearAdobeCommerceConfig();
+    clearCommerceQueryCache();
     setConfig(getAdobeCommerceConfig());
     setSaved(false);
   }

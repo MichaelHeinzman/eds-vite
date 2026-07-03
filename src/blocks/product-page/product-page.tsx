@@ -2,9 +2,9 @@ import { render } from "preact";
 import { useState } from "preact/hooks";
 
 import { ProductPageSkeleton } from "@components/loading-skeleton/loading-skeleton";
-import { addProductToCart } from "@services/cart";
-import { getProduct } from "@services/products";
-import type { Product } from "@/types/catalog";
+import { useAddProductToCart } from "@services/cart";
+import { getProduct, useProduct } from "@services/products";
+import { CommerceQueryProvider } from "@services/query-client";
 
 function ProductMediaCarousel({ name, initials, primaryImage, images }: { name: string; initials: string; primaryImage?: string; images: string[] }) {
   const gallery = [...new Set([primaryImage, ...images].filter((image): image is string => Boolean(image)))];
@@ -24,12 +24,15 @@ function ProductMediaCarousel({ name, initials, primaryImage, images }: { name: 
   </div>;
 }
 
-function ProductPage({ product }: { product: Product | null }) {
+function ProductPage({ id }: { id: string }) {
+  const { data: product, error, isPending } = useProduct(id);
+  const addMutation = useAddProductToCart();
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [selections, setSelections] = useState<Record<string, string>>({});
 
-  if (!product) return <div class="catalog-empty"><h1>Product not found</h1><a href="/products">Return to products</a></div>;
+  if (isPending) return <div class="skeleton-loading" role="status" aria-label="Loading product"><ProductPageSkeleton /></div>;
+  if (error || !product) return <div class="catalog-empty"><h1>Product not found</h1>{error ? <p>{error.message}</p> : null}<a href="/products">Return to products</a></div>;
   const currentProduct = product;
 
   const selectedIds = Object.values(selections);
@@ -44,10 +47,12 @@ function ProductPage({ product }: { product: Product | null }) {
   const initials = product.name.split(" ").map((word) => word[0]).slice(0, 2).join("");
 
   async function addToCart() {
-    if (!canAddToCart) return;
-    await addProductToCart({ ...currentProduct, sku: displaySku, price: displayPrice, image: displayImage, inStock: available }, quantity);
-    setAdded(true);
-    window.setTimeout(() => setAdded(false), 1800);
+    if (!canAddToCart || addMutation.isPending) return;
+    try {
+      await addMutation.mutateAsync({ product: { ...currentProduct, sku: displaySku, price: displayPrice, image: displayImage, inStock: available }, quantity });
+      setAdded(true);
+      window.setTimeout(() => setAdded(false), 1800);
+    } catch { /* The mutation error is exposed in the live status region. */ }
   }
 
   return <div class="product-detail-page">
@@ -62,8 +67,8 @@ function ProductPage({ product }: { product: Product | null }) {
         <strong class="product-detail-price">${displayPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}</strong>
         {product.options?.length ? <div class="product-options">{product.options.map((option) => <label key={option.id}><span>{option.title}{option.required ? " *" : ""}</span><select value={selections[option.id] || ""} required={option.required} onChange={(event) => setSelections((current) => ({ ...current, [option.id]: event.currentTarget.value }))}><option value="">Choose {option.title.toLowerCase()}</option>{option.values.map((value) => <option key={value.id} value={value.id} disabled={!value.inStock}>{value.title}{value.inStock ? "" : " — unavailable"}</option>)}</select></label>)}</div> : null}
         <p class={`stock-status ${available ? "in-stock" : "out-of-stock"}`}>{available ? "In stock and ready to ship" : "Currently unavailable"}</p>
-        <div class="product-actions"><label><span>Quantity</span><select value={quantity} onChange={(event) => setQuantity(Number(event.currentTarget.value))}><option>1</option><option>2</option><option>3</option></select></label><sp-button size="l" disabled={!canAddToCart} onClick={addToCart}>{added ? "Added to cart" : canAddToCart ? "Add to cart" : "Select options"}</sp-button></div>
-        <div class={`add-confirmation ${added ? "visible" : ""}`} role="status">{quantity} {quantity === 1 ? "item" : "items"} added to your cart.</div>
+        <div class="product-actions"><label><span>Quantity</span><select value={quantity} disabled={addMutation.isPending} onChange={(event) => setQuantity(Number(event.currentTarget.value))}><option>1</option><option>2</option><option>3</option></select></label><sp-button size="l" aria-busy={addMutation.isPending} disabled={!canAddToCart || addMutation.isPending} onClick={addToCart}>{addMutation.isPending ? "Adding…" : added ? "Added to cart" : canAddToCart ? "Add to cart" : "Select options"}</sp-button></div>
+        <div class={`add-confirmation ${added || addMutation.error ? "visible" : ""} ${addMutation.error ? "error" : ""}`} role="status" aria-live="polite">{addMutation.error?.message || `${quantity} ${quantity === 1 ? "item" : "items"} added to your cart.`}</div>
         <div class="product-benefits"><div><strong>Free delivery</strong><span>On qualifying local orders</span></div><div><strong>Easy returns</strong><span>30-day return window</span></div></div>
       </div>
     </div>
@@ -74,10 +79,7 @@ export default async function decorate(block: HTMLElement) {
   const id = decodeURIComponent(window.location.pathname.split("/").filter(Boolean).at(-1) || "");
   block.dataset.blockLoadingUi = "true";
   render(<div class="skeleton-loading" role="status" aria-label="Loading product"><ProductPageSkeleton /></div>, block);
-  try {
-    render(<ProductPage product={await getProduct(id)} />, block);
-  } catch {
-    render(<ProductPage product={null} />, block);
-  }
+  await getProduct(id).catch(() => undefined);
+  render(<CommerceQueryProvider><ProductPage id={id} /></CommerceQueryProvider>, block);
   delete block.dataset.blockLoadingUi;
 }

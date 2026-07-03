@@ -8,7 +8,12 @@
     "generate:pages": "node scripts/generate-static-pages.mjs",
     "dev": "npm run generate:pages && vite",
     "build": "tsc -b && npm run generate:pages && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
     "@spectrum-web-components/action-button": "^1.12.1",
@@ -22,13 +27,18 @@
     "@spectrum-web-components/progress-circle": "^1.12.1",
     "@spectrum-web-components/theme": "^1.12.1",
     "@tanstack/query-core": "^5.101.2",
+    "@tanstack/react-query": "^5.101.2",
     "preact": "^10.29.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@preact/preset-vite": "^2.10.5",
+    "@testing-library/preact": "^3.2.4",
     "@types/node": "^24.13.2",
+    "jsdom": "^29.1.1",
     "typescript": "~6.0.2",
     "vite": "^8.1.1",
-    "vite-plugin-compression2": "^2.5.3"
+    "vite-plugin-compression2": "^2.5.3",
+    "vitest": "^4.1.9"
   }
 }
