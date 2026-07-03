@@ -6,7 +6,7 @@ import { useEffect, useRef } from "preact/hooks";
 type ModalProps = {
   isOpen: boolean;
   title?: string;
-  position?: "right" | "center";
+  position?: "right" | "center" | "bottom";
   onClose: () => void;
   children: ComponentChildren;
 };
@@ -59,6 +59,24 @@ export function Modal({ isOpen, title, position = "center", onClose, children }:
           <sp-divider size="s" />
           <div class="drawer-body">{children}</div>
         </aside>
+      </div>,
+      portalTarget,
+    );
+  }
+
+  if (position === "bottom") {
+    return createPortal(
+      <div class="bottom-sheet" role="presentation">
+        <button class="modal-underlay" type="button" aria-label="Close filters" onClick={onClose} />
+        <section ref={panelRef} class="bottom-sheet-panel" role="dialog" aria-modal="true" aria-label={title || "Dialog"} tabIndex={-1}>
+          <header class="bottom-sheet-header">
+            <div class="bottom-sheet-handle" aria-hidden="true" />
+            <h2>{title || "Dialog"}</h2>
+            <sp-action-button quiet label="Close filters" onClick={onClose}><sp-icon-close slot="icon" /></sp-action-button>
+          </header>
+          <sp-divider size="s" />
+          <div class="bottom-sheet-body">{children}</div>
+        </section>
       </div>,
       portalTarget,
     );

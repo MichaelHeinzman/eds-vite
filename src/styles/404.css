@@ -1,0 +1,38 @@
+.error-page {
+  display: grid;
+  min-height: calc(100dvh - var(--nav-height));
+  place-items: center;
+  padding: clamp(32px, 8vw, 96px) 24px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 20% 20%, rgb(146 174 139 / 22%), transparent 36%),
+    linear-gradient(145deg, #f6f2eb, #ebe3d8);
+}
+
+.error-card {
+  width: min(100%, 640px);
+  padding: clamp(32px, 7vw, 72px);
+  border: 1px solid rgb(45 36 31 / 12%);
+  border-radius: 28px;
+  box-sizing: border-box;
+  background: rgb(255 255 255 / 88%);
+  box-shadow: 0 24px 70px rgb(45 36 31 / 14%);
+  text-align: center;
+}
+
+.error-mark { width: 72px; height: 72px; }
+.error-kicker { margin: 20px 0 0; color: #5e7259; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.error-number { margin: 8px 0 -16px; color: rgb(45 36 31 / 10%); font-size: clamp(88px, 22vw, 160px); font-weight: 800; line-height: 1; }
+.error-card h1 { margin: 0; color: #2d241f; font-size: clamp(30px, 6vw, 48px); line-height: 1.1; }
+.error-card h1 + p { max-width: 500px; margin: 20px auto 0; color: #655b54; }
+
+.error-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px; }
+.error-button { display: inline-flex; min-height: 44px; align-items: center; padding: 0 20px; border: 1px solid #2d241f; border-radius: 999px; color: #2d241f; font-weight: 700; }
+.error-button:hover { background: #f1ece5; color: #2d241f; text-decoration: none; }
+.error-button-primary { background: #2d241f; color: #fff; }
+.error-button-primary:hover { background: #493c34; color: #fff; }
+
+@media (max-width: 767px) {
+  .error-page { min-height: calc(100dvh - 64px); }
+  .error-card { border-radius: 20px; }
+}

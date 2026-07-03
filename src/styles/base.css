@@ -10,10 +10,14 @@ body {
 
 body.appear { display: block; }
 .app-theme { display: block; min-height: 100vh; }
-header { height: var(--nav-height); }
-header .header, footer .footer { visibility: hidden; }
-header .header[data-block-status="loaded"], footer .footer[data-block-status="loaded"] { visibility: visible; }
+body > header { height: var(--nav-height); }
+body > header .header, body > footer .footer { visibility: hidden; }
+body > header .header[data-block-status="loaded"], body > footer .footer[data-block-status="loaded"] { visibility: visible; }
 main > div { margin: 40px 16px; }
 input, textarea, select, button { font: inherit; }
 a:any-link { color: var(--link-color); text-decoration: none; overflow-wrap: break-word; }
 a:hover { color: var(--link-hover-color); text-decoration: underline; }
+
+@media (max-width: 767px) {
+  body > header { height: 64px; }
+}

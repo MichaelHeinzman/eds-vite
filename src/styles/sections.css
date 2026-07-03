@@ -1,5 +1,5 @@
 main > .section { margin: 40px 0; }
-main > .section > div { max-width: 1200px; margin: auto; padding: 0 24px; }
+main > .section > div { box-sizing: border-box; min-width: 0; max-width: 1200px; margin: auto; padding: 0 24px; }
 main > .section:first-of-type { margin-top: 0; }
 main .section.light, main .section.highlight { background-color: var(--light-color); margin: 0; padding: 40px 0; }
 .block[data-block-status="initialized"], .block[data-block-status="loading"]:not([data-block-loading-ui]) { visibility: hidden; }
