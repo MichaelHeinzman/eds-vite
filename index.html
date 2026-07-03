@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EDS Preact</title>
+    <style>
+      /* Prevent authored block markup from flashing before decoration starts. */
+      body:not(.appear) main {
+        visibility: hidden;
+      }
+    </style>
   </head>
   <body>
     <header></header>
