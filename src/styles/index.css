@@ -25,6 +25,8 @@
   main .section[data-background-color="gray-blue"] { background: #e9eef2; }
   main .section[data-background-color="midnight-blue"] { background: #252a2f; color: white; }
   .default-content-wrapper { max-width: 76ch; margin-inline: auto; }
+  .default-content-wrapper:has(.docs-page, .blocks-page, .github-page) { width: 100%; max-width: none; }
+  .cart-page-wrapper { width: 100%; }
   .grid-wrapper { display: grid; gap: 24px; }
   .button-container { display: inline-flex; margin: 0 8px 8px 0; }
   .spectrum-Button { text-decoration: none; }
@@ -36,6 +38,52 @@
   .site-header nav ul { display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
   .site-header nav a, .site-footer nav a { display: inline-flex; padding: 10px 12px; border-radius: 8px; color: #343434; text-decoration: none; }
   .site-header nav a:hover, .site-footer nav a:hover { background: rgb(0 0 0 / 6%); }
+  .site-header nav a[aria-current="page"] { background: #e8f1ff; color: #0759b7; font-weight: 700; }
+  .page-eyebrow { margin: 0 0 12px; color: #1769c2; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .page-lead { max-width: 720px; color: #555; font-size: clamp(18px, 2.3vw, 24px); line-height: 1.55; }
+  .default-content-wrapper h1 { max-width: 780px; margin: 0 0 20px; font-size: clamp(40px, 7vw, 72px); line-height: 1.02; letter-spacing: -.04em; }
+  .default-content-wrapper h2 { margin-top: 40px; }
+  .default-content-wrapper code { padding: 3px 7px; border-radius: 5px; background: #eceff2; }
+  .mock-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 40px; }
+  .mock-card-grid article { padding: 28px; border: 1px solid #dedede; border-radius: 16px; background: white; box-shadow: 0 8px 24px rgb(0 0 0 / 6%); }
+  .mock-card-grid article h2 { margin: 0 0 10px; }
+  .docs-page, .blocks-page, .github-page { padding-block: 16px; }
+  .docs-feature-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 32px 0 48px; }
+  .docs-feature-grid article { padding: 22px; border-radius: 14px; background: #f3f6f8; }
+  .docs-feature-grid article strong { font-size: 17px; }
+  .docs-feature-grid article p { margin-bottom: 0; color: #5d6268; line-height: 1.55; }
+  .default-content-wrapper pre { max-width: 900px; overflow-x: auto; padding: 22px; border: 1px solid #dfe3e7; border-radius: 12px; background: #1f2429; color: #f4f6f8; line-height: 1.55; }
+  .default-content-wrapper pre code { padding: 0; background: transparent; color: inherit; }
+  .docs-steps { display: grid; gap: 14px; max-width: 900px; padding-left: 24px; }
+  .block-catalog article { display: flex; align-items: flex-start; flex-direction: column; }
+  .block-catalog article p { flex: 1; }
+  .block-kind { margin-bottom: 14px; padding: 5px 9px; border-radius: 999px; background: #e8f1ff; color: #0759b7; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .status-flow { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 24px 0; }
+  .status-flow span { padding: 10px 14px; border: 1px solid #cfd5da; border-radius: 999px; background: white; font-family: monospace; }
+  .repo-card { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 900px; margin: 36px 0 56px; padding: 28px; border: 1px solid #dfe3e7; border-radius: 16px; background: white; box-shadow: 0 10px 30px rgb(0 0 0 / 7%); }
+  .repo-card > div { display: grid; gap: 6px; }
+  .repo-card span { color: #676d72; font-size: 13px; }
+  .repo-card > div a { font-size: clamp(16px, 2vw, 22px); font-weight: 700; }
+  .cart-page-loading { display: grid; place-items: center; gap: 16px; min-height: 420px; }
+  .cart-page-content { width: 100%; }
+  .cart-page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 36px; }
+  .cart-page-heading h1 { margin: 0; font-size: clamp(38px, 6vw, 64px); letter-spacing: -.035em; }
+  .cart-page-heading > p { color: #666; }
+  .cart-page-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); gap: clamp(32px, 6vw, 80px); align-items: start; }
+  .cart-page-items { overflow: hidden; border: 1px solid #dedede; border-radius: 16px; background: white; }
+  .cart-page-items .cart-item { grid-template-columns: 136px 1fr; padding: 24px; }
+  .cart-page-items .cart-item-media { width: 136px; height: 136px; }
+  .cart-page-items .cart-item-heading h3 { font-size: 20px; }
+  .delivery-note { display: grid; gap: 5px; margin: 8px 24px 24px; padding: 18px; border-radius: 12px; background: #edf6ee; color: #295d30; }
+  .delivery-note span { font-size: 13px; }
+  .order-summary { position: sticky; top: 96px; display: grid; gap: 20px; padding: 28px; border: 1px solid #dedede; border-radius: 16px; background: white; box-shadow: 0 12px 36px rgb(0 0 0 / 8%); }
+  .order-summary h2 { margin: 0; }
+  .order-summary dl { display: grid; gap: 14px; margin: 0; }
+  .order-summary dl div, .order-total { display: flex; justify-content: space-between; gap: 24px; }
+  .order-summary dd { margin: 0; font-weight: 600; }
+  .order-summary sp-button { width: 100%; }
+  .order-summary > a { text-align: center; }
+  .order-summary small { color: #6c6c6c; text-align: center; line-height: 1.45; }
   .cta-content { display: flex; align-items: center; justify-content: space-between; gap: 32px; width: min(100%, 1080px); margin: auto; padding: clamp(28px, 5vw, 56px); background: white; text-align: left; }
   .cta-copy > * { margin: 0; }
   .cta-copy > * + * { margin-top: 8px; }
@@ -81,5 +129,13 @@
     .cta-content { align-items: flex-start; flex-direction: column; gap: 24px; }
     .drawer-header, .minicart-footer { padding-inline: 20px; }
     .minicart-items { padding-inline: 12px; }
+    .mock-card-grid { grid-template-columns: 1fr; }
+    .docs-feature-grid { grid-template-columns: 1fr; }
+    .repo-card { align-items: flex-start; flex-direction: column; }
+    .cart-page-heading { align-items: flex-start; flex-direction: column; }
+    .cart-page-layout { grid-template-columns: 1fr; }
+    .order-summary { position: static; }
+    .cart-page-items .cart-item { grid-template-columns: 104px 1fr; padding: 18px; }
+    .cart-page-items .cart-item-media { width: 104px; height: 104px; }
   }
 }

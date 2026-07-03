@@ -8,9 +8,17 @@ type MiniCartComponent = preact.ComponentType<{
   onClose: () => void;
 }>;
 
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/docs", label: "Docs" },
+  { href: "/blocks", label: "Blocks" },
+  { href: "/github", label: "GitHub" },
+];
+
 export const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [MiniCart, setMiniCart] = useState<MiniCartComponent | null>(null);
+  const currentPath = window.location.pathname;
 
   async function openCart() {
     setIsCartOpen(true);
@@ -37,18 +45,13 @@ export const Header = () => {
 
         <nav aria-label="Primary Navigation">
           <ul>
-            <li>
-              <a href="/">Home</a>
-            </li>
-            <li>
-              <a href="/docs">Docs</a>
-            </li>
-            <li>
-              <a href="/blocks">Blocks</a>
-            </li>
-            <li>
-              <a href="https://github.com">GitHub</a>
-            </li>
+            {navItems.map((item) => (
+              <li key={item.href}>
+                <a href={item.href} aria-current={currentPath === item.href ? "page" : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))}
           </ul>
         </nav>
 

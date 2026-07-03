@@ -1,4 +1,5 @@
 import type { ComponentChildren } from "preact";
+import { createPortal } from "preact/compat";
 import { useEffect, useRef } from "preact/hooks";
 
 type ModalProps = {
@@ -31,8 +32,10 @@ export function Modal({ isOpen, title, position = "center", onClose, children }:
 
   if (!isOpen) return null;
 
+  const portalTarget = document.querySelector("body > sp-theme") || document.body;
+
   if (position === "right") {
-    return (
+    return createPortal(
       <div class="drawer" role="presentation">
         <button class="drawer-underlay" type="button" aria-label="Close cart" onClick={onClose} />
         <aside
@@ -55,13 +58,15 @@ export function Modal({ isOpen, title, position = "center", onClose, children }:
           <sp-divider size="s" />
           <div class="drawer-body">{children}</div>
         </aside>
-      </div>
+      </div>,
+      portalTarget,
     );
   }
 
-  return (
+  return createPortal(
     <sp-dialog-wrapper headline={title || "Dialog"} open underlay dismissable responsive size="l">
       {children}
-    </sp-dialog-wrapper>
+    </sp-dialog-wrapper>,
+    portalTarget,
   );
 }

@@ -1,6 +1,7 @@
 import "@styles/index.css";
 import "@spectrum-web-components/styles/global-elements.css";
 import { applySpectrumTheme } from "@/spectrum";
+import { loadMockPage } from "@/mocks/pages";
 
 type BlockModule = {
   default?: (block: HTMLElement) => void | Promise<void>;
@@ -486,4 +487,5 @@ export async function loadPage() {
 }
 
 applySpectrumTheme();
+loadMockPage();
 loadPage();
