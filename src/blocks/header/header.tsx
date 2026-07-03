@@ -97,6 +97,9 @@ export const Header = ({ initialCartCount = 0 }: { initialCartCount?: number }) 
 };
 
 export default async function decorate(block: HTMLElement) {
+  block.dataset.blockLoadingUi = "true";
+  render(<Header />, block);
   const cart = await getCart().catch(() => null);
   render(<Header initialCartCount={cart?.itemCount ?? 0} />, block);
+  delete block.dataset.blockLoadingUi;
 }

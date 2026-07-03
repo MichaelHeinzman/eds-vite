@@ -36,12 +36,44 @@ export const CORE_PRODUCTS_QUERY = `query Products($search: String, $pageSize: I
 
 export const CORE_PRODUCT_QUERY = `query Product($sku: String!) {
   products(filter: { sku: { eq: $sku } }, pageSize: 1) {
-    items { uid sku name stock_status description { html } small_image { url label } media_gallery { url label } price_range { minimum_price { regular_price { value currency } final_price { value currency } } } }
+    items { uid sku name stock_status description { html } small_image { url label } media_gallery { url label } price_range { minimum_price { regular_price { value currency } final_price { value currency } } } ... on ConfigurableProduct { configurable_options { attribute_code label values { uid value_index label swatch_data { value } } } variants { attributes { code value_index } product { sku stock_status small_image { url label } price_range { minimum_price { final_price { value currency } } } } } } }
   }
 }`;
 
 export const CATALOG_PRODUCTS_QUERY = `query CatalogProducts($skus: [String!]!) {
-  products(skus: $skus) { __typename id externalId sku name description shortDescription inStock images(roles: ["image", "small_image", "thumbnail"]) { url label roles } ... on SimpleProductView { price { final { amount { value currency } } regular { amount { value currency } } } } }
+  products(skus: $skus) { __typename id externalId sku name description shortDescription inStock images(roles: ["image", "small_image", "thumbnail"]) { url label roles } ... on SimpleProductView { price { final { amount { value currency } } regular { amount { value currency } } } } ... on ComplexProductView { priceRange { minimum { final { amount { value currency } } regular { amount { value currency } } } maximum { final { amount { value currency } } } } } }
+}`;
+
+export const CATALOG_PRODUCT_QUERY = `query CatalogProduct($skus: [String]) {
+  products(skus: $skus) {
+    __typename id externalId sku name description shortDescription metaDescription metaKeyword metaTitle inStock addToCartAllowed url urlKey
+    images(roles: []) { url label roles }
+    attributes(roles: []) { name label value roles }
+    ... on SimpleProductView { price { roles final { amount { value currency } } regular { amount { value currency } } } }
+    ... on ComplexProductView {
+      options {
+        id title required multi
+        values {
+          id title inStock __typename
+          ... on ProductViewOptionValueProduct { quantity isDefault product { sku name shortDescription inStock images(roles: []) { url label roles } price { roles final { amount { value currency } } regular { amount { value currency } } } } }
+          ... on ProductViewOptionValueSwatch { type value }
+        }
+      }
+      priceRange { maximum { final { amount { value currency } } regular { amount { value currency } } roles } minimum { final { amount { value currency } } regular { amount { value currency } } roles } }
+    }
+  }
+}`;
+
+export const CATALOG_VARIANTS_QUERY = `query CatalogVariants($sku: String!) {
+  variants(sku: $sku, pageSize: 100) {
+    variants {
+      selections
+      product {
+        sku name inStock images(roles: []) { url label roles }
+        ... on SimpleProductView { price { roles final { amount { value currency } } regular { amount { value currency } } } }
+      }
+    }
+  }
 }`;
 
 export const CREATE_CART_MUTATION = `mutation { createGuestCart { cart { id } } }`;

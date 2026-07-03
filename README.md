@@ -74,6 +74,9 @@ The product listing and detail pages use `src/services/products.ts`. The service
 - For a Catalog Service PLP, configured SKUs are used when supplied; otherwise Core GraphQL supplies the page of SKUs and Catalog Service hydrates those products.
 - `/products` supports client-side search and sorting.
 - `/products/:id` renders product media, pricing, inventory state, quantity selection, and purchase actions.
+- PDP media uses an accessible image carousel with previous/next controls, image position, and selectable thumbnails.
+- Catalog Service and Core GraphQL complex products expose selectable options and resolve selected values to a concrete variant SKU, price, image, and inventory state.
+- Commerce descriptions are converted from authored HTML to display text before rendering in cards or PDP content.
 
 ## Cart service
 
