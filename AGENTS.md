@@ -325,7 +325,7 @@ Avoid converting simple decorators into Preact unnecessarily.
 
 # Hero Block
 
-The Hero block should remain functionally equivalent to the Havertys implementation.
+The Hero block should retain its current feature set while the implementation is modernized.
 
 Support:
 

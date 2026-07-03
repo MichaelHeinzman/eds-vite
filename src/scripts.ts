@@ -74,9 +74,19 @@ export async function loadLazy(doc: Document) {
   void loadFooter(doc.querySelector<HTMLElement>("footer"));
 }
 
+/**
+ * Loads work that can be postponed without affecting the user experience.
+ */
+export function loadDelayed() {
+  window.setTimeout(() => {
+    void import("./delayed");
+  }, 3000);
+}
+
 export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
+  loadDelayed();
 }
 
 applySpectrumTheme();

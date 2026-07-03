@@ -1,4 +1,5 @@
 import { render } from "preact";
+import "./commerce-settings.css";
 import { useState } from "preact/hooks";
 
 import { clearAdobeCommerceConfig, getAdobeCommerceConfig, isAdobeCommerceConfigured, saveAdobeCommerceConfig } from "@services/adobe-config";

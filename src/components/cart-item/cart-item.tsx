@@ -1,5 +1,8 @@
 import { useState } from "preact/hooks";
-import type { CartItem as CartItemType } from "@models/cart";
+import "./cart-item.css";
+import type { CartItem as CartItemType } from "@/types/cart";
+import type { Product } from "@/types/catalog";
+import { WishlistButton } from "@components/wishlist-button/wishlist-button";
 
 type CartItemProps = {
   item: CartItemType;
@@ -13,6 +16,7 @@ export function CartItem({ item, compact = false, priority = false, onQuantityCh
   const [pendingAction, setPendingAction] = useState<"quantity" | "remove" | null>(null);
   const [error, setError] = useState("");
   const initials = item.name.split(" ").map((word) => word[0]).slice(0, 2).join("");
+  const product: Product = { id: item.sku, sku: item.sku, name: item.name, description: "", category: "", price: item.price, currency: "USD", image: item.image, images: item.image ? [item.image] : [], inStock: true };
 
   async function runAction(action: "quantity" | "remove", callback: () => void | Promise<unknown>) {
     setPendingAction(action);
@@ -24,7 +28,7 @@ export function CartItem({ item, compact = false, priority = false, onQuantityCh
 
   return (
     <article class={`cart-item ${compact ? "cart-item-compact" : ""}`}>
-      <div class="cart-item-media" aria-hidden="true">
+      <a class="cart-item-media" href={`/products/${encodeURIComponent(item.sku)}`} aria-label={`View ${item.name}`}>
         <span>{initials}</span>
         {item.image ? (
           <img
@@ -35,12 +39,13 @@ export function CartItem({ item, compact = false, priority = false, onQuantityCh
             onError={(event) => { event.currentTarget.style.display = "none"; }}
           />
         ) : null}
-      </div>
+      </a>
       <div class="cart-item-content">
         <div class="cart-item-heading">
-          <h3>{item.name}</h3>
+          <h3><a href={`/products/${encodeURIComponent(item.sku)}`}>{item.name}</a></h3>
           <strong>${item.price.toLocaleString()}</strong>
         </div>
+        <WishlistButton product={product} compact />
         {item.options?.length ? (
           <p class="cart-item-options">{item.options.join(" · ")}</p>
         ) : null}

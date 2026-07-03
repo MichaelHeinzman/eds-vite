@@ -1,3 +1,5 @@
+import "./loading-skeleton.css";
+
 type LineProps = { class?: string };
 
 export function SkeletonLine({ class: className = "" }: LineProps) {

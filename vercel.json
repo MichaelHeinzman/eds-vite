@@ -5,6 +5,8 @@
     { "source": "/blocks", "destination": "/blocks.html" },
     { "source": "/github", "destination": "/github.html" },
     { "source": "/cart", "destination": "/cart.html" },
+    { "source": "/wishlist", "destination": "/wishlist.html" },
+    { "source": "/account", "destination": "/account.html" },
     { "source": "/commerce-settings", "destination": "/commerce-settings.html" },
     { "source": "/products", "destination": "/products.html" },
     { "source": "/products/:sku", "destination": "/product.html" }

@@ -10,6 +10,8 @@ const staticRouteEntries: Record<string, string> = {
   "/blocks": "/blocks.html",
   "/github": "/github.html",
   "/cart": "/cart.html",
+  "/wishlist": "/wishlist.html",
+  "/account": "/account.html",
   "/commerce-settings": "/commerce-settings.html",
   "/products": "/products.html",
 };
@@ -96,10 +98,13 @@ export default defineConfig(({ mode }) => ({
     rolldownOptions: {
       input: {
         index: path.resolve(__dirname, "index.html"),
+        404: path.resolve(__dirname, "404.html"),
         docs: path.resolve(__dirname, "docs.html"),
         blocks: path.resolve(__dirname, "blocks.html"),
         github: path.resolve(__dirname, "github.html"),
         cart: path.resolve(__dirname, "cart.html"),
+        wishlist: path.resolve(__dirname, "wishlist.html"),
+        account: path.resolve(__dirname, "account.html"),
         "commerce-settings": path.resolve(__dirname, "commerce-settings.html"),
         products: path.resolve(__dirname, "products.html"),
         product: path.resolve(__dirname, "product.html"),

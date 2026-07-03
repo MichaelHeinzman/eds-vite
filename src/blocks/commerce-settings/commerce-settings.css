@@ -1,0 +1,15 @@
+.commerce-settings-wrapper, .commerce-config { width: 100%; min-width: 0; }
+.settings-page { width: min(100%, 1040px); margin-inline: auto; }
+.settings-intro { margin-bottom: 28px; } .settings-intro h1 { margin: 0 0 16px; font-size: clamp(40px, 6vw, 68px); }
+.page-eyebrow { margin: 0 0 12px; color: #1769c2; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; } .page-lead { max-width: 720px; color: #555; font-size: clamp(18px, 2.3vw, 24px); line-height: 1.55; }
+.commerce-config, .settings-form { display: grid; gap: 24px; }
+.settings-form section { display: grid; gap: 18px; padding: clamp(20px, 3vw, 32px); border: 1px solid #dfe3e7; border-radius: 16px; background: #fff; }
+.settings-form label { display: grid; gap: 7px; } .settings-form label span { color: #575d62; font-size: 12px; font-weight: 700; } .settings-form input, .settings-form select, .settings-form textarea { width: 100%; min-height: 44px; padding: 9px 12px; border: 1px solid #c7ccd0; border-radius: 8px; background: #fff; box-sizing: border-box; }
+.settings-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } .settings-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
+.backend-cards { display: grid; gap: 14px; } .backend-cards > div { display: flex; align-items: flex-start; flex-direction: column; gap: 8px; padding: 20px; border: 2px solid #1473e6; border-radius: 14px; background: #fff; }
+.backend-badge { padding: 4px 7px; border-radius: 999px; background: #e9f2ff; color: #0759b7; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.adobe-readiness { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; padding: 18px 20px; border-radius: 12px; background: #eaf3ff; }
+.settings-section-heading { display: flex; align-items: flex-start; gap: 14px; } .settings-section-heading > span { display: grid; place-items: center; flex: 0 0 28px; height: 28px; border-radius: 50%; background: #1473e6; color: #fff; font-weight: 800; }
+.platform-guidance { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .platform-guidance article, .header-reference { padding: 16px; border-radius: 10px; background: #f1f4f6; }
+.security-notice { padding: 20px; border-left: 4px solid #d98200; border-radius: 10px; background: #fff6e5; }
+@media (max-width: 767px) { .settings-row, .platform-guidance { grid-template-columns: 1fr; } }

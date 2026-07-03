@@ -44,8 +44,12 @@ export function adobeQueryContext() {
 export const commerceQueryKeys = {
   all: ["commerce"] as const,
   products: () => ["commerce", ...adobeQueryContext(), "products"] as const,
+  productSearch: (criteria: unknown) => ["commerce", ...adobeQueryContext(), "product-search", criteria] as const,
   product: (id: string) => ["commerce", ...adobeQueryContext(), "product", id] as const,
   cart: () => ["commerce", ...adobeQueryContext(), "cart"] as const,
+  customer: () => ["commerce", ...adobeQueryContext(), "customer"] as const,
+  wishlist: () => ["commerce", ...adobeQueryContext(), "wishlist"] as const,
+  recommendations: (unitId: string, sku = "") => ["commerce", ...adobeQueryContext(), "recommendations", unitId, sku] as const,
 };
 
 export function runCommerceMutation<TData, TVariables>(

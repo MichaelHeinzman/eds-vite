@@ -1,15 +1,49 @@
 .call-to-action.block {
-  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 40px 24px;
 }
 
 .cta-content {
-  padding: 3rem 1.5rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(28px, 5vw, 72px);
+  width: min(100%, 1080px);
+  margin-inline: auto;
+  padding: clamp(32px, 5vw, 64px);
+  border: 1px solid #e0e3e8;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 16px 44px rgb(19 19 19 / 9%);
+}
+
+.cta-copy {
+  display: grid;
+  gap: 12px;
+  max-width: 720px;
+}
+
+.cta-copy > * {
+  margin: 0;
 }
 
 .cta-button {
   display: inline-flex;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   padding: 0.75rem 1.25rem;
   text-decoration: none;
   border: 1px solid currentColor;
+}
+
+.cta-content > .button {
+  flex: 0 0 auto;
+  min-width: 150px;
+}
+
+@media (max-width: 640px) {
+  .call-to-action.block { padding-inline: 16px; }
+  .cta-content { align-items: flex-start; flex-direction: column; }
+  .cta-content > .button { width: 100%; }
 }

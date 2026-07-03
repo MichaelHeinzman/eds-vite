@@ -1,0 +1,6 @@
+.account-page-wrapper { width: 100%; }
+.account-page { width: min(100%, 560px); margin-inline: auto; padding: clamp(24px, 5vw, 48px); border: 1px solid #dedede; border-radius: 18px; background: #fff; box-sizing: border-box; }
+.account-page h1 { font-size: clamp(38px, 6vw, 60px); }
+.page-eyebrow { margin: 0 0 12px; color: #1769c2; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.account-page form { display: grid; gap: 16px; } .account-page form label { display: grid; gap: 6px; } .account-page form input { min-height: 44px; padding: 9px 12px; border: 1px solid #bfc4c8; border-radius: 8px; }
+.account-page nav { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; } .account-page nav button { padding: 0; border: 0; background: transparent; color: #0759b7; cursor: pointer; text-decoration: underline; }

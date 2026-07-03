@@ -1,52 +1,53 @@
 import { render } from "preact";
-import { useMemo, useState } from "preact/hooks";
+import "./product-list.css";
+import { useEffect, useMemo, useState } from "preact/hooks";
 
+import type { ProductSearchCriteria } from "@/types/catalog";
 import { ProductCard } from "@components/product-card/product-card";
 import { ProductGridSkeleton } from "@components/loading-skeleton/loading-skeleton";
-import { getProducts, useProducts } from "@services/products";
+import { getProductSearch, useProductSearch } from "@services/products";
 import { CommerceQueryProvider } from "@services/query-client";
+import { setProductListSchema } from "@utils/structured-data";
 
-type SortOrder = "featured" | "price-asc" | "price-desc" | "name";
+type SortOrder = ProductSearchCriteria["sort"];
+export type ProductFilters = { query: string; sort: SortOrder; filters: Record<string, string[]>; ranges: Record<string, { from?: number; to?: number }> };
+export function readProductFilters(search = window.location.search): ProductFilters {
+  const params = new URLSearchParams(search); const filters: Record<string, string[]> = {}; const ranges: Record<string, { from?: number; to?: number }> = {};
+  params.forEach((value, key) => { const match = /^filter\[([^\]]+)\]$/.exec(key); const range = /^range\[([^\]]+)\]\[(from|to)\]$/.exec(key); if (match) filters[match[1]] = [...(filters[match[1]] || []), value]; if (range) ranges[range[1]] = { ...ranges[range[1]], [range[2]]: Number(value) }; });
+  return { query: params.get("q") || "", sort: (params.get("sort") as SortOrder) || "featured", filters, ranges };
+}
+export function serializeProductFilters(state: ProductFilters) { const params = new URLSearchParams(); if (state.query) params.set("q", state.query); if (state.sort !== "featured") params.set("sort", state.sort); Object.entries(state.filters).sort(([a], [b]) => a.localeCompare(b)).forEach(([attribute, values]) => values.slice().sort().forEach((value) => params.append(`filter[${attribute}]`, value))); Object.entries(state.ranges).sort(([a], [b]) => a.localeCompare(b)).forEach(([attribute, range]) => { if (range.from !== undefined) params.set(`range[${attribute}][from]`, String(range.from)); if (range.to !== undefined) params.set(`range[${attribute}][to]`, String(range.to)); }); return params.toString(); }
 
 function ProductList() {
-  const { data: products = [], error } = useProducts();
-  const [query, setQuery] = useState("");
-  const [sort, setSort] = useState<SortOrder>("featured");
+  const initial = readProductFilters();
+  const [query, setQuery] = useState(initial.query); const [phrase, setPhrase] = useState(initial.query);
+  const [sort, setSort] = useState<SortOrder>(initial.sort); const [filters, setFilters] = useState(initial.filters); const [ranges, setRanges] = useState(initial.ranges);
+  useEffect(() => { const timer = window.setTimeout(() => setPhrase(query.trim()), 250); return () => window.clearTimeout(timer); }, [query]);
+  const criteria = useMemo<ProductSearchCriteria>(() => ({ phrase, sort, filters, ranges }), [phrase, sort, filters, ranges]);
+  const { data, error, isPending, isFetching } = useProductSearch(criteria);
+  const products = data?.products || [];
+  useEffect(() => { const params = serializeProductFilters({ query, sort, filters, ranges }); window.history.replaceState(null, "", `${window.location.pathname}${params ? `?${params}` : ""}`); }, [query, sort, filters, ranges]);
+  useEffect(() => { if (products.length) setProductListSchema(products); }, [products]);
+  function toggle(attribute: string, value: string) { setFilters((current) => { const values = current[attribute] || []; const next = values.includes(value) ? values.filter((item) => item !== value) : [...values, value]; const updated = { ...current }; if (next.length) updated[attribute] = next; else delete updated[attribute]; return updated; }); }
+  function setRange(attribute: string, edge: "from" | "to", value: number, min: number, max: number) { setRanges((current) => { const existing = current[attribute] || {}; const next = { from: existing.from ?? min, to: existing.to ?? max, [edge]: value }; if (next.from! > next.to!) next[edge === "from" ? "to" : "from"] = value; const updated = { ...current }; if (next.from === min && next.to === max) delete updated[attribute]; else updated[attribute] = next; return updated; }); }
 
-  const visibleProducts = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    const filtered = normalizedQuery
-      ? products.filter((product) => `${product.name} ${product.category} ${product.sku}`.toLowerCase().includes(normalizedQuery))
-      : products;
-    return [...filtered].sort((a, b) => {
-      if (sort === "price-asc") return a.price - b.price;
-      if (sort === "price-desc") return b.price - a.price;
-      if (sort === "name") return a.name.localeCompare(b.name);
-      return 0;
-    });
-  }, [products, query, sort]);
-
-  return (
-    <div class="catalog-page">
-      <header class="catalog-heading">
-        <div><p class="page-eyebrow">Shop</p><h1>Explore the collection</h1><p class="page-lead">Catalog data from the configured Adobe Commerce catalog source.</p></div>
-        <span>{visibleProducts.length} products</span>
-      </header>
-      <div class="catalog-toolbar">
-        <label><span>Search products</span><input type="search" value={query} placeholder="Search by name, category, or SKU" onInput={(event) => setQuery(event.currentTarget.value)} /></label>
-        <label><span>Sort by</span><select value={sort} onChange={(event) => setSort(event.currentTarget.value as SortOrder)}><option value="featured">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="name">Name</option></select></label>
-      </div>
-      {error ? <div class="catalog-empty"><h2>Catalog unavailable</h2><p>{error.message}</p><a href="/commerce-settings">Configure Adobe Commerce</a></div> : null}
-      {!error && visibleProducts.length ? <div class="product-grid">{visibleProducts.map((product, index) => <ProductCard key={product.id} product={product} priority={index === 0} />)}</div> : null}
-      {!error && !visibleProducts.length ? <div class="catalog-empty"><h2>No products found</h2><p>Try a different search.</p></div> : null}
+  return <div class="catalog-page">
+    <header class="catalog-heading"><div><p class="page-eyebrow">Shop</p><h1>Explore the collection</h1><p class="page-lead">Products and facets from the configured Adobe Commerce catalog source.</p></div><span>{data?.total ?? 0} products</span></header>
+    <div class="catalog-toolbar">
+      <label><span>Search products</span><input type="search" value={query} placeholder="Search products" onInput={(event) => setQuery(event.currentTarget.value)} /></label>
+      <label><span>Sort by</span><select value={sort} onChange={(event) => setSort(event.currentTarget.value as SortOrder)}><option value="featured">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="name">Name</option></select></label>
+      {isFetching ? <span class="catalog-refresh" role="status">Updating…</span> : null}
     </div>
-  );
+    <div class="catalog-results-layout">
+      {data?.facets.length ? <aside class="catalog-facets" aria-label="Product filters">{data.facets.map((facet) => <fieldset key={facet.attribute}><legend>{facet.title}</legend>{facet.kind === "range" && facet.min !== undefined && facet.max !== undefined ? <div class="facet-range"><div><output>${ranges[facet.attribute]?.from ?? facet.min}</output><span>–</span><output>${ranges[facet.attribute]?.to ?? facet.max}</output></div><label><span class="sr-only">Minimum {facet.title}</span><input type="range" min={facet.min} max={facet.max} step="0.01" value={ranges[facet.attribute]?.from ?? facet.min} onInput={(event) => setRange(facet.attribute, "from", Number(event.currentTarget.value), facet.min!, facet.max!)} /></label><label><span class="sr-only">Maximum {facet.title}</span><input type="range" min={facet.min} max={facet.max} step="0.01" value={ranges[facet.attribute]?.to ?? facet.max} onInput={(event) => setRange(facet.attribute, "to", Number(event.currentTarget.value), facet.min!, facet.max!)} /></label></div> : facet.options.map((option) => <label key={option.value}><input type="checkbox" checked={filters[facet.attribute]?.includes(option.value) || false} onChange={() => toggle(facet.attribute, option.value)} /><span>{option.title}</span><small>{option.count}</small></label>)}</fieldset>)}</aside> : null}
+      <div class="catalog-results">{isPending ? <div class="skeleton-loading" role="status"><ProductGridSkeleton /></div> : error ? <div class="catalog-empty"><h2>Catalog unavailable</h2><p>{error.message}</p><a href="/commerce-settings">Configure Adobe Commerce</a></div> : products.length ? <div class="product-grid">{products.map((product, index) => <ProductCard key={product.id} product={product} priority={index === 0} />)}</div> : <div class="catalog-empty"><h2>No products found</h2><p>Try removing a filter or changing your search.</p></div>}</div>
+    </div>
+  </div>;
 }
 
 export default async function decorate(block: HTMLElement) {
-  block.dataset.blockLoadingUi = "true";
+  const initial = readProductFilters(); block.dataset.blockLoadingUi = "true";
   render(<div class="skeleton-loading" role="status" aria-label="Loading products"><ProductGridSkeleton /></div>, block);
-  await getProducts().catch(() => undefined);
-  render(<CommerceQueryProvider><ProductList /></CommerceQueryProvider>, block);
-  delete block.dataset.blockLoadingUi;
+  await getProductSearch({ phrase: initial.query, sort: initial.sort, filters: initial.filters, ranges: initial.ranges }).catch(() => undefined);
+  render(<CommerceQueryProvider><ProductList /></CommerceQueryProvider>, block); delete block.dataset.blockLoadingUi;
 }

@@ -1,4 +1,5 @@
 // src/blocks/fragment/fragment.tsx
+import "./fragment.css";
 import { render } from "preact";
 import { getLink, getRows, getText } from "@/utils/blocks";
 

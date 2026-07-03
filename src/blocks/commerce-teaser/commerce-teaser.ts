@@ -42,10 +42,8 @@ function decorateButton(button: HTMLElement | undefined, index: number) {
 
   anchor.href = href;
   anchor.className = "";
-  const spectrumVariant = buttonType === "cta"
-    ? "spectrum-Button--accent"
-    : "spectrum-Button--secondary";
-  anchor.classList.add("spectrum-Button", spectrumVariant);
+  const buttonVariant = buttonType === "cta" ? "accent" : "secondary";
+  anchor.classList.add("button", buttonVariant);
 
   if (buttonColor && isTextLinkCTA) {
     anchor.dataset.textColor = buttonColor;

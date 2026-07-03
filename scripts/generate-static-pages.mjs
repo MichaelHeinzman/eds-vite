@@ -9,6 +9,8 @@ const pages = [
   ["blocks", "Block Library", "blocks.html"],
   ["github", "GitHub", "github.html"],
   ["cart", "Cart", "cart.html"],
+  ["wishlist", "Wishlist", "wishlist.html"],
+  ["account", "Account", "account.html"],
   ["commerce-settings", "Commerce Settings", "commerce-settings.html"],
   ["products", "Products", "products.html"],
   ["product", "Product", "product.html"],
@@ -17,7 +19,7 @@ const pages = [
 await Promise.all(pages.map(async ([outputName, title, sourceName]) => {
   const authoredHtml = await readFile(resolve(root, "src", "mocks", "pages", sourceName), "utf8");
   const document = template
-    .replace(/<title>.*?<\/title>/s, `<title>${title} | EDS Vite</title>`)
+    .replace(/<title>.*?<\/title>/s, `<title>${title} | EDS Market</title>`)
     .replace(/<main>[\s\S]*?<\/main>/, `<main>\n${authoredHtml.trim()}\n    </main>`);
   await writeFile(resolve(root, `${outputName}.html`), document);
 }));

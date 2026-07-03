@@ -1,4 +1,14 @@
+.section:has(> .hero-wrapper) {
+  margin-top: 0;
+}
+
+.section:has(> .hero-wrapper) > .hero-wrapper {
+  max-width: none;
+  padding-inline: 0;
+}
+
 .hero { position: relative; overflow: hidden; min-height: clamp(420px, 65vw, 760px); background: #202020; }
+.hero-wrapper, .hero { width: 100%; }
 .hero-main-container, .hero-image-container, .hero-video-wrapper { position: absolute; inset: 0; }
 .hero-image-container picture, .hero-image-container img, .hero-video { width: 100%; height: 100%; object-fit: cover; }
 .hero-video-wrapper { z-index: 1; }

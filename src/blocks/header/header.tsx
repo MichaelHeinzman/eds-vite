@@ -1,4 +1,5 @@
 import { render } from "preact";
+import "./header.css";
 import { useState } from "preact/hooks";
 
 import { getCart, useCart } from "@services/cart";
@@ -15,6 +16,8 @@ type MiniCartComponent = preact.ComponentType<{
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Shop" },
+  { href: "/wishlist", label: "Wishlist" },
+  { href: "/account", label: "Account" },
   { href: "/docs", label: "Docs" },
   { href: "/blocks", label: "Blocks" },
   { href: "/github", label: "GitHub" },
@@ -58,9 +61,9 @@ export const Header = ({ initialCartCount = 0 }: { initialCartCount?: number }) 
   return (
     <div class="site-header">
       <div class="site-header-content">
-        <a class="site-logo" href="/" aria-label="EDS Vite home">
-          <sp-icon-home size="m" />
-          <span>EDS Vite</span>
+        <a class="site-logo" href="/" aria-label="EDS Market home">
+          <img src="/eds-market-mark-192.png" alt="" width="42" height="42" />
+          <span>EDS <em>Market</em></span>
         </a>
 
         <button class="mobile-nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded={isNavOpen} onClick={() => setIsNavOpen((open) => !open)}>

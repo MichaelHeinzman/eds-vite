@@ -1,4 +1,5 @@
 import { render } from "preact";
+import "./cart-page.css";
 import { useState } from "preact/hooks";
 
 import { CartItem } from "@components/cart-item/cart-item";

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#2d241f" />
+    <meta property="og:title" content="Page not found" />
+    <title>Page not found | EDS Market</title>
+    <link rel="icon" type="image/png" href="/eds-market-mark-64.png" />
+    <style>body:not(.appear) main { visibility: hidden; }</style>
+  </head>
+  <body>
+    <header></header>
+    <main class="error-page">
+      <section class="error-card" aria-labelledby="error-title">
+        <img class="error-mark" src="/eds-market-mark-192.png" alt="" width="88" height="88" />
+        <p class="error-kicker">Lost in the aisles?</p>
+        <p class="error-number" aria-hidden="true">404</p>
+        <h1 id="error-title">We couldn't find that page.</h1>
+        <p>The item may have moved, or the link may be out of date. Let’s get you somewhere useful.</p>
+        <div class="error-actions">
+          <a class="error-button error-button-primary" href="/products">Continue shopping</a>
+          <a class="error-button" href="/">Go home</a>
+          <a class="error-button error-button-back" href="/" hidden>Go back</a>
+        </div>
+      </section>
+    </main>
+    <footer></footer>
+    <script type="module" src="/src/scripts.ts"></script>
+    <script type="module">
+      if (document.referrer) {
+        const referrer = new URL(document.referrer);
+        if (referrer.origin === window.location.origin) {
+          const backButton = document.querySelector('.error-button-back');
+          backButton.href = `${referrer.pathname}${referrer.search}`;
+          backButton.hidden = false;
+        }
+      }
+    </script>
+  </body>
+</html>

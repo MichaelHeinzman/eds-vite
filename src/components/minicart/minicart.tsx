@@ -1,3 +1,4 @@
+import "./minicart.css";
 import { CartItem } from "@components/cart-item/cart-item";
 import { Modal } from "@components/modal/modal";
 import { useCart, useRemoveCartItem, useUpdateCartItem } from "@services/cart";
@@ -36,7 +37,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
               <strong>${cart.subtotal.toLocaleString()}</strong>
             </div>
 
-            <a class="spectrum-Button spectrum-Button--accent" href="/cart">
+            <a class="button accent" href="/cart">
               View Cart
             </a>
           </footer>

@@ -1,16 +1,20 @@
 import { render } from "preact";
+import "./footer.css";
 
 function Footer() {
   return (
     <div class="site-footer">
       <div>
-        <strong>EDS Vite</strong>
-        <p>Modern Edge Delivery, powered by Preact and Adobe Spectrum.</p>
+        <a class="footer-brand" href="/" aria-label="EDS Market home">
+          <img src="/eds-market-mark-192.png" alt="" width="46" height="46" />
+          <strong>EDS Market</strong>
+        </a>
+        <p>Thoughtful pieces for the way you live.</p>
       </div>
       <nav aria-label="Footer navigation">
-        <a href="/docs">Documentation</a>
-        <a href="/blocks">Blocks</a>
-        <a href="https://github.com">GitHub</a>
+        <a href="/products">Shop</a>
+        <a href="/wishlist">Wishlist</a>
+        <a href="/account">Account</a>
       </nav>
     </div>
   );

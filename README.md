@@ -9,6 +9,7 @@ The project preserves EDS semantic HTML authoring and progressive block enhancem
 - Vite development server and production build
 - Preact for structured and stateful interfaces
 - Adobe Spectrum Web Components for accessible UI primitives
+- Warm, retail-focused visual theme with a generated EDS Market brand mark
 - Dynamic block loading through `import.meta.glob`
 - EDS-style section and block decoration
 - Responsive images, video, and media preloading
@@ -20,16 +21,21 @@ The project preserves EDS semantic HTML authoring and progressive block enhancem
 - Eager, high-priority loading for likely LCP images and awaited sequential block decoration
 - Vitest unit/component tests and Playwright desktop/mobile browser journeys
 - Responsive mobile navigation, compact commerce layouts, and visible pending/error feedback for cart mutations
+- Adobe Commerce customer login, account creation, and password-reset flows
+- Removable wishlist, recommendation blocks, URL-persisted PLP facets, and commerce JSON-LD
 
 ## Local pages
 
 | Route | Source | Purpose |
 | --- | --- | --- |
 | `/` | `index.html` | Authored homepage fixture |
+| `/404.html` | `404.html` | Static not-found document included in production builds |
 | `/docs` | `src/mocks/pages/docs.html` | Runtime documentation |
 | `/blocks` | `src/mocks/pages/blocks.html` | Block catalog and contracts |
 | `/github` | `src/mocks/pages/github.html` | Repository information |
 | `/cart` | `src/mocks/pages/cart.html` | Mock cart page |
+| `/wishlist` | `src/mocks/pages/wishlist.html` | Locally saved products |
+| `/account` | `src/mocks/pages/account.html` | Adobe Commerce customer authentication |
 | `/products` | `src/mocks/pages/products.html` | Searchable and sortable product listing |
 | `/products/:id` | `src/mocks/pages/product.html` | Dynamic product detail page |
 | `/commerce-settings` | `src/mocks/pages/commerce-settings.html` | Adobe Commerce connection settings |
@@ -53,6 +59,8 @@ Two catalog modes are supported:
 
 Implemented core operations include product listing, product-by-SKU, guest-cart creation, cart retrieval, `addProductsToCart`, `updateCartItems`, and `removeItemFromCart`.
 
+Customer operations use Core Commerce GraphQL: `generateCustomerToken`, `customer`, `createCustomerV2`, `requestPasswordResetEmail`, and `resetPassword`. The demo token lives in `sessionStorage`, never persistent local storage. A production deployment should use a secure, server-managed session where its architecture permits it. Removing the authored `account-page` block and route removes the customer UI; catalog and cart services do not depend on it.
+
 Configuration checklist:
 
 - **Core GraphQL endpoint:** required in every real Adobe mode. For Magento Open Source and Adobe Commerce on-premises/PaaS this is normally the store's `/graphql` endpoint. It remains required with Catalog Service because carts and checkout are core mutations.
@@ -74,7 +82,7 @@ The product listing and detail pages use `src/services/products.ts`. The service
 - A Catalog Service PDP sends `variables: { skus: [requestedSku] }` directly to `products(skus:)`.
 - Product URLs preserve the canonical SKU casing because Catalog Service SKU matching is case-sensitive.
 - For a Catalog Service PLP, configured SKUs are used when supplied; otherwise Core GraphQL supplies the page of SKUs and Catalog Service hydrates those products.
-- `/products` supports client-side search and sorting.
+- `/products` uses backend search, sorting, and facets rather than deriving filters from the current page of products. Core mode sends Magento `products(search, filter, sort)` and renders `products.aggregations`; Catalog Service mode sends `productSearch` and renders `productSearch.facets`, then hydrates the returned SKUs through Catalog Service `products`. State is encoded in `q`, `sort`, and repeatable `filter[attribute]` query parameters so filtered URLs survive reloads and can be shared.
 - `/products/:id` renders product media, pricing, inventory state, quantity selection, and purchase actions.
 - PDP media uses an accessible image carousel with previous/next controls, image position, and selectable thumbnails.
 - Catalog Service and Core GraphQL complex products expose selectable options and resolve selected values to a concrete variant SKU, price, image, and inventory state.
@@ -86,6 +94,16 @@ The product listing and detail pages use `src/services/products.ts`. The service
 
 The header count, mini cart, product page, and full cart page synchronize through a lightweight browser event. UI components remain independent of Adobe response shapes so additional adapters can be registered later.
 
+Cart item media and names link to `/products/:sku`. The same reusable favorite control appears on product cards, PDPs, cart pages, and the mini cart.
+
+## Wishlist, recommendations, and SEO
+
+Wishlist products are normalized `Product` values managed by `src/services/wishlist.ts`; UI never reads storage or Adobe payloads directly. Guests use browser-local favorites. Authenticated customers read `customer.wishlists` and mutate Adobe Commerce with `createWishlist`, `addProductsToWishlist`, and `removeProductsFromWishlist` using their customer bearer token. `/wishlist` displays the active guest or customer collection. The adapter can be replaced or removed by deleting its block, service, component, and route.
+
+`product-recommendations` is an optional authored block. Its `recId` row identifies an Adobe recommendation unit. The service calls Catalog Service `recommendationsByUnitIds` with the unit ID, current SKU, cart SKUs, and the last 20 locally recorded product views, then normalizes `results[].productsView`. Removing recommendation rows from authored pages disables the feature without runtime changes. A unit can legitimately return no results when it is inactive, has insufficient behavioral data, targets a different store context, or reports `userError`.
+
+PDP and PLP blocks write one dynamic `application/ld+json` script after product data resolves. PDPs emit Schema.org `Product`/`Offer`; PLPs emit `ItemList`. The isolated `src/utils/structured-data.ts` helper owns this behavior.
+
 ## TanStack Query
 
 All Adobe GraphQL traffic is managed by the shared TanStack Query client and provider in `src/services/query-client.ts`. Preact blocks consume provider-neutral service hooks built with `useQuery` and `useMutation`; Vite maps the React adapter to `preact/compat`. Product and cart reads use configuration-aware query keys for caching and request deduplication. Cart writes update the cart query cache on success and expose their pending/error lifecycle directly to the UI. Saving or clearing Commerce configuration removes cached data from the previous backend context.
@@ -96,6 +114,7 @@ All Adobe GraphQL traffic is managed by the shared TanStack Query client and pro
 src/
   aem.ts                  Typed EDS runtime primitives and Vite block loader
   scripts.ts              Project decoration and page bootstrap
+  delayed.ts              Postponed, non-critical runtime work
   spectrum.ts             Spectrum component registration and theme
   assets/                 Bundled icons and media
   blocks/                 Independently loaded EDS blocks
@@ -110,6 +129,8 @@ src/
 ```
 
 ## Development
+
+The initial global stylesheet is composed in `src/styles/index.css` from focused Adobe EDS baseline files for fonts, tokens, theme/base elements, typography, buttons, media, and section metadata. Blocks and shared components own and import their colocated CSS; global CSS must not carry component selectors. Spectrum Web Components keeps its own global-elements stylesheet and theme registration.
 
 ```bash
 npm install

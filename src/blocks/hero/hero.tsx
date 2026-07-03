@@ -195,10 +195,8 @@ export default async function decorate(block: HTMLElement) {
         customButton.href = data.url || "#";
         customButton.title = data.label;
         customButton.textContent = data.label;
-        const variant = data.type.includes("secondary")
-          ? "spectrum-Button--secondary"
-          : "spectrum-Button--accent";
-        customButton.classList.add("spectrum-Button", variant);
+        const variant = data.type.includes("secondary") ? "secondary" : "accent";
+        customButton.classList.add("button", variant);
 
         p.className = "button-container";
         p.append(customButton);

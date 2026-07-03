@@ -1,4 +1,5 @@
 // src/blocks/call-to-action/call-to-action.tsx
+import "./call-to-action.css";
 import { render } from "preact";
 import { getLink, getRows, getText } from "@/utils/blocks";
 
@@ -18,7 +19,7 @@ function CallToAction(props: CTAProps) {
 
       {props.buttonLabel && (
         <a
-          class="spectrum-Button spectrum-Button--accent"
+          class="button accent"
           href={props.buttonHref}
           aria-label={props.buttonAriaLabel || props.buttonLabel}
         >

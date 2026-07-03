@@ -1,5 +1,12 @@
 .carousel-content {
-  padding: 2rem;
+  padding: 40px 24px;
+}
+
+.carousel-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 40px 24px;
 }
 
 .carousel-content a {

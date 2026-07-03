@@ -1,4 +1,5 @@
 import type { ComponentChildren } from "preact";
+import "./modal.css";
 import { createPortal } from "preact/compat";
 import { useEffect, useRef } from "preact/hooks";
 

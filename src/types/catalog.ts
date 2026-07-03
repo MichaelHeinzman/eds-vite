@@ -28,3 +28,7 @@ export type ProductVariant = {
   image?: string;
   inStock: boolean;
 };
+
+export type ProductFacet = { attribute: string; title: string; kind: "scalar" | "range"; options: Array<{ value: string; title: string; count: number }>; min?: number; max?: number };
+export type ProductSearchCriteria = { phrase: string; sort: "featured" | "price-asc" | "price-desc" | "name"; filters: Record<string, string[]>; ranges: Record<string, { from?: number; to?: number }> };
+export type ProductSearchResult = { products: Product[]; facets: ProductFacet[]; total: number };
