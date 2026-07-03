@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 
 import { CartItem } from "@components/cart-item/cart-item";
 import { Modal } from "@components/modal/modal";
-import { getCart } from "@services/cart";
+import { getCart, removeCartItem, subscribeCart, updateCartItem } from "@services/cart";
 import type { Cart } from "@models/cart";
 
 type MiniCartProps = {
@@ -14,16 +14,13 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
   const [cart, setCart] = useState<Cart | null>(null);
 
   useEffect(() => {
-    if (!isOpen) return;
-
     let mounted = true;
-
-    getCart().then((data) => {
-      if (mounted) setCart(data);
-    });
+    const unsubscribe = subscribeCart((data) => { if (mounted) setCart(data); });
+    if (isOpen) getCart().then((data) => { if (mounted) setCart(data); });
 
     return () => {
       mounted = false;
+      unsubscribe();
     };
   }, [isOpen]);
 
@@ -40,8 +37,9 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
 
           <div class="minicart-items">
             {cart.items.map((item) => (
-              <CartItem key={item.id} item={item} compact />
+              <CartItem key={item.id} item={item} compact onQuantityChange={(quantity) => updateCartItem(item.id, quantity)} onRemove={() => removeCartItem(item.id)} />
             ))}
+            {!cart.items.length ? <div class="empty-cart"><h3>Your cart is empty</h3><a href="/products">Browse products</a></div> : null}
           </div>
 
           <footer class="minicart-footer">

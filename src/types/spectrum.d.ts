@@ -19,6 +19,7 @@ type SpectrumElementProps = JSX.HTMLAttributes<HTMLElement> & {
   horizontal?: boolean;
   indeterminate?: boolean;
   quiet?: boolean;
+  disabled?: boolean;
 };
 
 declare module "preact" {

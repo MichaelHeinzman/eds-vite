@@ -2,6 +2,8 @@ import blocksHtml from "./pages/blocks.html?raw";
 import cartHtml from "./pages/cart.html?raw";
 import docsHtml from "./pages/docs.html?raw";
 import githubHtml from "./pages/github.html?raw";
+import productHtml from "./pages/product.html?raw";
+import productsHtml from "./pages/products.html?raw";
 
 type MockPage = {
   title: string;
@@ -13,6 +15,7 @@ const pages: Record<string, MockPage> = {
   "/blocks": { title: "Block Library", html: blocksHtml },
   "/github": { title: "GitHub", html: githubHtml },
   "/cart": { title: "Cart", html: cartHtml },
+  "/products": { title: "Products", html: productsHtml },
 };
 
 function normalizePath(pathname: string) {
@@ -22,7 +25,9 @@ function normalizePath(pathname: string) {
 
 export function loadMockPage() {
   const path = normalizePath(window.location.pathname);
-  const page = pages[path];
+  const page = path.startsWith("/products/")
+    ? { title: "Product", html: productHtml }
+    : pages[path];
 
   if (!page) return;
 

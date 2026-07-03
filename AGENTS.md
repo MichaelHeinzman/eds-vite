@@ -37,12 +37,15 @@ Do not introduce frameworks beyond Preact.
 ```text
 src/
   main.ts
-  aem.ts
+  spectrum.ts
 
   assets/
   blocks/
   components/
+  mocks/
+  services/
   styles/
+  types/
   utils/
 ```
 
@@ -63,7 +66,7 @@ Aliases:
 
 The runtime is intentionally modeled after Adobe EDS.
 
-`main.ts` should remain a thin bootstrapper.
+`main.ts` currently owns the EDS page runtime and bootstrap flow. Keep new domain-specific business logic in blocks, services, mocks, or utilities rather than growing unrelated logic in this file.
 
 Typical flow:
 
@@ -72,13 +75,13 @@ decorateMain(main);
 loadPage();
 ```
 
-Business logic belongs in `aem.ts` or `utils/`.
+Reusable runtime helpers belong in `utils/`; domain logic belongs in its block or service.
 
 ---
 
-# aem.ts Responsibilities
+# Runtime Responsibilities
 
-Owns the page runtime.
+`main.ts` owns the page runtime.
 
 Responsibilities include:
 
@@ -94,7 +97,7 @@ Responsibilities include:
 - preloadVideoFromSection()
 - loadPage()
 
-Avoid placing reusable helpers in this file.
+Avoid placing reusable or commerce-specific helpers in this file.
 
 ---
 
@@ -225,6 +228,50 @@ import "./hero.css";
 Vite handles CSS bundling automatically.
 
 Never implement runtime CSS loading.
+
+Adobe Spectrum Web Components is the project component library. Prefer Spectrum primitives for buttons, dialogs, cards, progress states, dividers, and icons. CSS should focus on page composition, responsive layout, and block-specific media treatment.
+
+---
+
+# Mock Pages
+
+Local pages without an EDS backend live in `src/mocks/pages/` and are registered in `src/mocks/pages.ts`.
+
+- `/` continues to use the authored markup in `index.html`.
+- Mock fixtures must use EDS-shaped semantic HTML.
+- Load fixtures before calling `loadPage()`.
+- Update the README route table whenever a page is added, removed, or renamed.
+
+---
+
+# Commerce Providers
+
+Commerce access belongs in `src/services/`. Components consume the normalized UI types from `src/types/cart.ts` and must not depend directly on backend response shapes.
+
+Current providers:
+
+- `adobe`: local Adobe Commerce GraphQL-shaped fixture; not a live Luma API.
+- `dummyjson`: live furniture product data from DummyJSON.
+
+Backend-specific contracts and fixtures belong under `src/types/` and `src/mocks/commerce/`. Keep provider switching behind the service boundary.
+
+---
+
+# Documentation Maintenance
+
+Treat `README.md` as part of every architectural or feature change.
+
+Update it when changing:
+
+- setup or commands
+- project structure
+- routes or mock pages
+- dependencies or component libraries
+- backend integrations or data contracts
+- deployment configuration
+- block lifecycle or runtime behavior
+
+When creating a major feature area or a folder with its own architectural contract, add a scoped `AGENTS.md` to that folder. Keep it concise and specific to files below that directory. Do not duplicate the entire root instruction file.
 
 ---
 

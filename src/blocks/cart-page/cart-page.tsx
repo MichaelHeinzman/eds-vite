@@ -2,7 +2,7 @@ import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import { CartItem } from "@components/cart-item/cart-item";
-import { getCart } from "@services/cart";
+import { getCart, removeCartItem, subscribeCart, updateCartItem } from "@services/cart";
 import type { Cart } from "@models/cart";
 
 function CartPage() {
@@ -10,10 +10,11 @@ function CartPage() {
 
   useEffect(() => {
     let mounted = true;
+    const unsubscribe = subscribeCart((data) => { if (mounted) setCart(data); });
     getCart().then((data) => {
       if (mounted) setCart(data);
     });
-    return () => { mounted = false; };
+    return () => { mounted = false; unsubscribe(); };
   }, []);
 
   if (!cart) {
@@ -41,7 +42,8 @@ function CartPage() {
 
       <div class="cart-page-layout">
         <section class="cart-page-items" aria-label="Cart items">
-          {cart.items.map((item) => <CartItem key={item.id} item={item} />)}
+          {cart.items.map((item) => <CartItem key={item.id} item={item} onQuantityChange={(quantity) => updateCartItem(item.id, quantity)} onRemove={() => removeCartItem(item.id)} />)}
+          {!cart.items.length ? <div class="empty-cart"><h2>Your cart is empty</h2><p>Add something from the catalog to see the full flow.</p><a href="/products">Browse products</a></div> : null}
           <div class="delivery-note">
             <strong>Free local delivery</strong>
             <span>White-glove delivery scheduling is available after checkout.</span>

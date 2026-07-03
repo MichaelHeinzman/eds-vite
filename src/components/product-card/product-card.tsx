@@ -1,0 +1,23 @@
+import type { Product } from "@/types/catalog";
+
+export function ProductCard({ product }: { product: Product }) {
+  const initials = product.name.split(" ").map((word) => word[0]).slice(0, 2).join("");
+
+  return (
+    <article class="product-card">
+      <a class="product-card-media" href={`/products/${product.id}`} aria-label={`View ${product.name}`}>
+        <span>{initials}</span>
+        {product.image ? <img src={product.image} alt={product.name} loading="lazy" /> : null}
+      </a>
+      <div class="product-card-body">
+        <div class="product-card-meta"><span>{product.category}</span>{product.rating ? <span>★ {product.rating.toFixed(1)}</span> : null}</div>
+        <h2><a href={`/products/${product.id}`}>{product.name}</a></h2>
+        <p>{product.description}</p>
+        <div class="product-card-footer">
+          <strong>${product.price.toLocaleString(undefined, { minimumFractionDigits: 2 })}</strong>
+          <a class="spectrum-Button spectrum-Button--primary" href={`/products/${product.id}`}>View product</a>
+        </div>
+      </div>
+    </article>
+  );
+}
