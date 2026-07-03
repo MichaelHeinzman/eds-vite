@@ -8,6 +8,7 @@ import "@spectrum-web-components/dialog/sp-dialog-wrapper.js";
 import "@spectrum-web-components/progress-circle/sp-progress-circle.js";
 import "@spectrum-web-components/divider/sp-divider.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-shopping-cart.js";
+import "@spectrum-web-components/icons-workflow/icons/sp-icon-settings.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-close.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-home.js";
 import "@spectrum-web-components/icons-workflow/icons/sp-icon-info-outline.js";

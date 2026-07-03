@@ -250,8 +250,8 @@ Commerce access belongs in `src/services/`. Components consume the normalized UI
 
 Current providers:
 
-- `adobe`: local Adobe Commerce GraphQL-shaped fixture; not a live Luma API.
-- `dummyjson`: live furniture product data from DummyJSON.
+- `adobe`: merchant-configured core Commerce GraphQL plus optional Catalog Service reads.
+- `adobe`: the only registered backend. Keep data access behind provider-neutral services so future backend adapters remain possible without UI rewrites.
 
 Backend-specific contracts and fixtures belong under `src/types/` and `src/mocks/commerce/`. Keep provider switching behind the service boundary.
 

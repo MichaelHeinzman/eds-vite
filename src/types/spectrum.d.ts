@@ -20,6 +20,7 @@ type SpectrumElementProps = JSX.HTMLAttributes<HTMLElement> & {
   indeterminate?: boolean;
   quiet?: boolean;
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 };
 
 declare module "preact" {
@@ -33,6 +34,7 @@ declare module "preact" {
       "sp-progress-circle": SpectrumElementProps;
       "sp-divider": SpectrumElementProps;
       "sp-icon-shopping-cart": SpectrumElementProps;
+      "sp-icon-settings": SpectrumElementProps;
       "sp-icon-close": SpectrumElementProps;
       "sp-icon-home": SpectrumElementProps;
       "sp-icon-info-outline": SpectrumElementProps;

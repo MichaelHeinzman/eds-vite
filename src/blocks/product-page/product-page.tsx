@@ -3,6 +3,7 @@ import { useEffect, useState } from "preact/hooks";
 
 import { addProductToCart } from "@services/cart";
 import { getProduct } from "@services/products";
+import { ProductPageSkeleton } from "@components/loading-skeleton/loading-skeleton";
 import type { Product } from "@/types/catalog";
 
 function ProductPage() {
@@ -13,11 +14,11 @@ function ProductPage() {
 
   useEffect(() => {
     let mounted = true;
-    getProduct(id).then((data) => { if (mounted) setProduct(data); });
+    getProduct(id).then((data) => { if (mounted) setProduct(data); }).catch(() => { if (mounted) setProduct(null); });
     return () => { mounted = false; };
   }, [id]);
 
-  if (product === undefined) return <div class="catalog-loading"><sp-progress-circle indeterminate size="l" /><span>Loading product…</span></div>;
+  if (product === undefined) return <div class="skeleton-loading" role="status" aria-label="Loading product"><ProductPageSkeleton /></div>;
   if (product === null) return <div class="catalog-empty"><h1>Product not found</h1><a href="/products">Return to products</a></div>;
 
   const initials = product.name.split(" ").map((word) => word[0]).slice(0, 2).join("");

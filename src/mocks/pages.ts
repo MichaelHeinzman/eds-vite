@@ -1,5 +1,6 @@
 import blocksHtml from "./pages/blocks.html?raw";
 import cartHtml from "./pages/cart.html?raw";
+import commerceSettingsHtml from "./pages/commerce-settings.html?raw";
 import docsHtml from "./pages/docs.html?raw";
 import githubHtml from "./pages/github.html?raw";
 import productHtml from "./pages/product.html?raw";
@@ -15,6 +16,7 @@ const pages: Record<string, MockPage> = {
   "/blocks": { title: "Block Library", html: blocksHtml },
   "/github": { title: "GitHub", html: githubHtml },
   "/cart": { title: "Cart", html: cartHtml },
+  "/commerce-settings": { title: "Commerce Settings", html: commerceSettingsHtml },
   "/products": { title: "Products", html: productsHtml },
 };
 

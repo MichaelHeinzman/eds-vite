@@ -2,6 +2,7 @@ import { render } from "preact";
 import { useEffect, useState } from "preact/hooks";
 
 import { CartItem } from "@components/cart-item/cart-item";
+import { CartPageSkeleton } from "@components/loading-skeleton/loading-skeleton";
 import { getCart, removeCartItem, subscribeCart, updateCartItem } from "@services/cart";
 import type { Cart } from "@models/cart";
 
@@ -18,12 +19,7 @@ function CartPage() {
   }, []);
 
   if (!cart) {
-    return (
-      <div class="cart-page-loading" aria-live="polite">
-        <sp-progress-circle indeterminate size="l" />
-        <span>Loading your cart…</span>
-      </div>
-    );
+    return <div class="skeleton-loading" role="status" aria-label="Loading your cart"><CartPageSkeleton /></div>;
   }
 
   const delivery = 0;

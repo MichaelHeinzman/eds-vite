@@ -2,7 +2,7 @@ import { render } from "preact";
 import { useEffect, useMemo, useState } from "preact/hooks";
 
 import { ProductCard } from "@components/product-card/product-card";
-import { getCommerceBackend } from "@services/cart";
+import { ProductGridSkeleton } from "@components/loading-skeleton/loading-skeleton";
 import { getProducts } from "@services/products";
 import type { Product } from "@/types/catalog";
 
@@ -13,11 +13,14 @@ function ProductList() {
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortOrder>("featured");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let mounted = true;
     getProducts().then((data) => {
       if (mounted) setProducts(data);
+    }).catch((reason: unknown) => {
+      if (mounted) setError(reason instanceof Error ? reason.message : "Unable to load products.");
     }).finally(() => {
       if (mounted) setLoading(false);
     });
@@ -40,16 +43,17 @@ function ProductList() {
   return (
     <div class="catalog-page">
       <header class="catalog-heading">
-        <div><p class="page-eyebrow">Shop</p><h1>Explore the collection</h1><p class="page-lead">Catalog data from {getCommerceBackend() === "adobe" ? "the local Adobe Commerce fixture" : "the live DummyJSON furniture API"}.</p></div>
+        <div><p class="page-eyebrow">Shop</p><h1>Explore the collection</h1><p class="page-lead">Catalog data from the configured Adobe Commerce catalog source.</p></div>
         <span>{visibleProducts.length} products</span>
       </header>
       <div class="catalog-toolbar">
         <label><span>Search products</span><input type="search" value={query} placeholder="Search by name, category, or SKU" onInput={(event) => setQuery(event.currentTarget.value)} /></label>
         <label><span>Sort by</span><select value={sort} onChange={(event) => setSort(event.currentTarget.value as SortOrder)}><option value="featured">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="name">Name</option></select></label>
       </div>
-      {loading ? <div class="catalog-loading"><sp-progress-circle indeterminate size="l" /><span>Loading products…</span></div> : null}
+      {loading ? <div class="skeleton-loading" role="status" aria-label="Loading products"><ProductGridSkeleton /></div> : null}
+      {!loading && error ? <div class="catalog-empty"><h2>Catalog unavailable</h2><p>{error}</p><a href="/commerce-settings">Configure Adobe Commerce</a></div> : null}
       {!loading && visibleProducts.length ? <div class="product-grid">{visibleProducts.map((product) => <ProductCard key={product.id} product={product} />)}</div> : null}
-      {!loading && !visibleProducts.length ? <div class="catalog-empty"><h2>No products found</h2><p>Try a different search.</p></div> : null}
+      {!loading && !error && !visibleProducts.length ? <div class="catalog-empty"><h2>No products found</h2><p>Try a different search.</p></div> : null}
     </div>
   );
 }

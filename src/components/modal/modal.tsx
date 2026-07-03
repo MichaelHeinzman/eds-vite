@@ -64,9 +64,14 @@ export function Modal({ isOpen, title, position = "center", onClose, children }:
   }
 
   return createPortal(
-    <sp-dialog-wrapper headline={title || "Dialog"} open underlay dismissable responsive size="l">
-      {children}
-    </sp-dialog-wrapper>,
+    <div class="modal-shell" role="presentation">
+      <button class="modal-underlay" type="button" aria-label="Close dialog" onClick={onClose} />
+      <section ref={panelRef} class="modal-panel" role="dialog" aria-modal="true" aria-label={title || "Dialog"} tabIndex={-1}>
+        <header class="modal-panel-header"><div><span class="drawer-eyebrow">Storefront settings</span><h2>{title || "Dialog"}</h2></div><sp-action-button quiet label="Close dialog" onClick={onClose}><sp-icon-close slot="icon" /></sp-action-button></header>
+        <sp-divider size="s" />
+        <div class="modal-panel-body">{children}</div>
+      </section>
+    </div>,
     portalTarget,
   );
 }

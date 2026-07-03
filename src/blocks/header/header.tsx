@@ -3,11 +3,11 @@ import { useEffect, useState } from "preact/hooks";
 
 import {
   getCart,
-  getCommerceBackend,
-  setCommerceBackend,
   subscribeCart,
-  type CommerceBackend,
 } from "@services/cart";
+import { isAdobeCommerceConfigured } from "@services/adobe-config";
+import { Modal } from "@components/modal/modal";
+import { CommerceSettingsPanel } from "@blocks/commerce-settings/commerce-settings";
 
 type MiniCartComponent = preact.ComponentType<{
   isOpen: boolean;
@@ -26,21 +26,17 @@ export const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [MiniCart, setMiniCart] = useState<MiniCartComponent | null>(null);
   const [cartCount, setCartCount] = useState(0);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const currentPath = window.location.pathname;
-  const commerceBackend = getCommerceBackend();
 
   useEffect(() => {
     let mounted = true;
     const unsubscribe = subscribeCart((cart) => { if (mounted) setCartCount(cart.itemCount); });
-    getCart().then((cart) => { if (mounted) setCartCount(cart.itemCount); });
+    getCart().then((cart) => { if (mounted) setCartCount(cart.itemCount); }).catch(() => { if (mounted) setCartCount(0); });
     return () => { mounted = false; unsubscribe(); };
   }, []);
 
-  function changeBackend(event: Event) {
-    const select = event.currentTarget as HTMLSelectElement;
-    setCommerceBackend(select.value as CommerceBackend);
-    window.location.reload();
-  }
+  function applySettings() { setIsSettingsOpen(false); window.location.reload(); }
 
   async function openCart() {
     setIsCartOpen(true);
@@ -77,13 +73,10 @@ export const Header = () => {
           </ul>
         </nav>
 
-        <label class="backend-switcher">
-          <span>Commerce backend</span>
-          <select value={commerceBackend} onChange={changeBackend}>
-            <option value="adobe">Adobe Commerce</option>
-            <option value="dummyjson">DummyJSON</option>
-          </select>
-        </label>
+        <sp-action-button class="commerce-settings-button" aria-label="Commerce settings" onClick={() => setIsSettingsOpen(true)}>
+          <sp-icon-settings slot="icon" />
+          <span class="commerce-backend-label">{isAdobeCommerceConfigured() ? "Adobe Commerce" : "Adobe: setup needed"}</span>
+        </sp-action-button>
 
         <sp-action-button
           class="header-cart-button"
@@ -96,6 +89,9 @@ export const Header = () => {
         </sp-action-button>
 
         {MiniCart && <MiniCart isOpen={isCartOpen} onClose={closeCart} />}
+        <Modal isOpen={isSettingsOpen} title="Commerce backend" onClose={() => setIsSettingsOpen(false)}>
+          <CommerceSettingsPanel embedded onComplete={applySettings} />
+        </Modal>
       </div>
     </div>
   );
