@@ -179,3 +179,15 @@ export function preloadHeroImage(picture: HTMLPictureElement) {
 
   document.head.append(link);
 }
+
+export function addVideoCaptionsTrack(
+  video: HTMLVideoElement,
+  src = "/captions/background-video.en.vtt",
+) {
+  const captions = document.createElement("track");
+  captions.kind = "captions";
+  captions.label = "English";
+  captions.srclang = "en";
+  captions.src = src;
+  video.append(captions);
+}

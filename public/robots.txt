@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://eds-vite.vercel.app/sitemap.xml

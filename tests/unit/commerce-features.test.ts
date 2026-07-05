@@ -31,10 +31,14 @@ test("reads and mutates Adobe Commerce wishlists when authenticated", async () =
   expect(String(fetchMock.mock.calls[2][1]?.body)).toContain("removeProductsFromWishlist");
 });
 
-test("writes valid Product and ItemList JSON-LD", () => {
+test("writes valid Product, breadcrumb, and ItemList JSON-LD", () => {
   setProductSchema(product);
   let schema = JSON.parse(document.querySelector<HTMLScriptElement>('script[type="application/ld+json"]')!.textContent!);
-  expect(schema["@type"]).toBe("Product"); expect(schema.offers.availability).toContain("InStock");
+  const productSchema = schema["@graph"].find((entry: { "@type": string }) => entry["@type"] === "Product");
+  const breadcrumbSchema = schema["@graph"].find((entry: { "@type": string }) => entry["@type"] === "BreadcrumbList");
+  expect(productSchema.offers.availability).toContain("InStock");
+  expect(productSchema.offers.url).toContain("/products/CHAIR-1");
+  expect(breadcrumbSchema.itemListElement).toHaveLength(3);
   setProductListSchema([product]);
   schema = JSON.parse(document.querySelector<HTMLScriptElement>('script[type="application/ld+json"]')!.textContent!);
   expect(schema["@type"]).toBe("ItemList"); expect(schema.itemListElement[0].url).toContain("/products/CHAIR-1");

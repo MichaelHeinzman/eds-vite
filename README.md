@@ -102,7 +102,7 @@ Wishlist products are normalized `Product` values managed by `src/services/wishl
 
 `product-recommendations` is an optional authored block. Its `recId` row identifies an Adobe recommendation unit. The service calls Catalog Service `recommendationsByUnitIds` with the unit ID, current SKU, cart SKUs, and the last 20 locally recorded product views, then normalizes `results[].productsView`. Removing recommendation rows from authored pages disables the feature without runtime changes. A unit can legitimately return no results when it is inactive, has insufficient behavioral data, targets a different store context, or reports `userError`.
 
-PDP and PLP blocks write one dynamic `application/ld+json` script after product data resolves. PDPs emit Schema.org `Product`/`Offer`; PLPs emit `ItemList`. The isolated `src/utils/structured-data.ts` helper owns this behavior.
+Static page generation writes route-specific descriptions, canonical URLs, robots directives, Open Graph/Twitter cards, `robots.txt`, and `sitemap.xml`. Set `SITE_URL` to the production origin during generation; the demo defaults to `https://eds-vite.vercel.app` (custom deployments must also update the homepage canonical and WebSite schema in `index.html`). Cart, wishlist, account, settings, and the generic product shell are excluded from indexing. Product pages replace the shell metadata after data resolves and emit Schema.org `Product`, `Offer`, and `BreadcrumbList`; PLPs emit `ItemList`. The isolated `src/utils/structured-data.ts` helper owns structured data behavior.
 
 ## TanStack Query
 

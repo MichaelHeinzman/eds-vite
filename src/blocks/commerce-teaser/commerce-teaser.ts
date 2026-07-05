@@ -1,4 +1,5 @@
 import "./commerce-teaser.css";
+import { addVideoCaptionsTrack } from "@utils/media";
 
 function getDynamicMediaImage(image: HTMLElement): HTMLImageElement {
   const link = image.querySelector<HTMLAnchorElement>("a[href]");
@@ -203,6 +204,7 @@ function decorateVideo(videoContainer: HTMLElement) {
   source.type = "video/mp4";
 
   videoElement.append(source);
+  addVideoCaptionsTrack(videoElement);
 
   let buttonWrapper: HTMLDivElement | undefined;
 

@@ -1,6 +1,7 @@
 import { setAuthorDataProps } from "@utils/author";
 import { readBlockKeyValue } from "@utils/blocks";
 import {
+  addVideoCaptionsTrack,
   createOptimizedPicture,
   getDynamicMediaImage,
   getDynamicMediaSrc,
@@ -298,6 +299,8 @@ export default async function decorate(block: HTMLElement) {
     video.loop = true;
     video.preload = "auto";
     video.className = "hero-video";
+
+    addVideoCaptionsTrack(video);
 
     video.setAttribute("muted", "");
     video.setAttribute("autoplay", "");

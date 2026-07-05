@@ -8,6 +8,7 @@ import { getProduct, useProduct } from "@services/products";
 import { CommerceQueryProvider } from "@services/query-client";
 import { WishlistButton } from "@components/wishlist-button/wishlist-button";
 import { setProductSchema } from "@utils/structured-data";
+import { setPageMetadata } from "@utils/metadata";
 import { recordProductView } from "@services/recommendations";
 
 function ProductMediaCarousel({ name, initials, primaryImage, images }: { name: string; initials: string; primaryImage?: string; images: string[] }) {
@@ -34,7 +35,11 @@ function ProductPage({ id }: { id: string }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [selections, setSelections] = useState<Record<string, string>>({});
-  useEffect(() => { if (product) { setProductSchema(product); recordProductView(product.sku); } }, [product]);
+  useEffect(() => { if (product) {
+    setProductSchema(product);
+    setPageMetadata({ title: `${product.name} | EDS Market`, description: product.description, canonicalUrl: `/products/${encodeURIComponent(product.sku)}`, image: product.image || product.images[0], type: "product" });
+    recordProductView(product.sku);
+  } }, [product]);
 
   if (isPending) return <div class="skeleton-loading" role="status" aria-label="Loading product"><ProductPageSkeleton /></div>;
   if (error || !product) return <div class="catalog-empty"><h1>Product not found</h1>{error ? <p>{error.message}</p> : null}<a href="/products">Return to products</a></div>;
