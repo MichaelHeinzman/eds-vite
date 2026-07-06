@@ -1,23 +1,28 @@
-name: Publish AEM build assets
+name: Build AEM assets for pull request
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write
+  statuses: write
 
 concurrency:
-  group: publish-aem-dist-main
+  group: build-aem-dist-pr-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
-  build-and-commit:
+  build-and-update:
+    name: Build and update AEM assets
+    if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - uses: actions/setup-node@v4
         with:
@@ -27,14 +32,22 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - name: Commit generated AEM assets
+      - name: Update generated AEM assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           git add --all -- aem-dist
-          if git diff --cached --quiet; then
-            echo "aem-dist is already current."
-            exit 0
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Build AEM production assets"
+            git push origin "HEAD:${HEAD_BRANCH}"
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "Build AEM production assets"
-          git push origin HEAD:main
+
+          HEAD_SHA="$(git rev-parse HEAD)"
+          gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/statuses/${HEAD_SHA}" \
+            -f state=success \
+            -f context="aem-dist/current" \
+            -f description="Production AEM assets are current"
