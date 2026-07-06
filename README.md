@@ -54,9 +54,9 @@ git add aem-dist
 git commit
 ```
 
-GitHub Actions runs `npm run build` for pull requests. For branches in this repository, the `Build AEM assets for pull request` workflow commits changed `aem-dist/` output back to the pull-request branch and publishes the `aem-dist/current` commit status. Because the workflow updates the pull-request branch instead of `main`, the protected main branch continues to require pull requests.
+GitHub Actions runs `npm run build` for pull requests. For branches in this repository, the `Build AEM assets for pull request` workflow commits changed `aem-dist/` output back to the pull-request branch, publishes the `aem-dist/current` commit status, and dispatches CI for the generated commit. Because the workflow updates the pull-request branch instead of `main`, the protected main branch continues to require pull requests.
 
-To prevent merging before generated assets are ready, add `aem-dist/current` and the CI build as required status checks in the ruleset or branch protection rule for `main`. Enable **Require branches to be up to date before merging** so concurrent pull requests rebuild against the latest `main` instead of merging stale generated assets. The repository-wide Actions permission can remain read-only because the asset workflow explicitly requests narrowly scoped `contents: write` and `statuses: write` access.
+To prevent merging before generated assets are ready, add `aem-dist/current` and the CI build as required status checks in the ruleset or branch protection rule for `main`. Enable **Require branches to be up to date before merging** so concurrent pull requests rebuild against the latest `main` instead of merging stale generated assets. The repository-wide Actions permission can remain read-only because the asset workflow explicitly requests narrowly scoped `actions: write`, `contents: write`, and `statuses: write` access.
 
 AEM does not compile TypeScript. Publish `head.html` and the generated `aem-dist/` files with the repository so production pages can load the browser-ready assets.
 

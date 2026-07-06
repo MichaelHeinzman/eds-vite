@@ -5,6 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
+  actions: write
   contents: write
   statuses: write
 
@@ -37,12 +38,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
+          ASSETS_UPDATED=false
           git add --all -- aem-dist
           if ! git diff --cached --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git commit -m "Build AEM production assets"
             git push origin "HEAD:${HEAD_BRANCH}"
+            ASSETS_UPDATED=true
           fi
 
           HEAD_SHA="$(git rev-parse HEAD)"
@@ -51,3 +54,7 @@ jobs:
             -f state=success \
             -f context="aem-dist/current" \
             -f description="Production AEM assets are current"
+
+          if [ "${ASSETS_UPDATED}" = true ]; then
+            gh workflow run ci.yml --ref "${HEAD_BRANCH}"
+          fi
