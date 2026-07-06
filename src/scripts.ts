@@ -1,6 +1,4 @@
 import "@styles/index.css";
-import "@spectrum-web-components/styles/global-elements.css";
-import { applySpectrumTheme } from "@/spectrum";
 import {
   decorateBlocks,
   decorateIcons,
@@ -77,17 +75,9 @@ export async function loadLazy(doc: Document) {
 /**
  * Loads work that can be postponed without affecting the user experience.
  */
-export function loadDelayed() {
-  window.setTimeout(() => {
-    void import("./delayed");
-  }, 3000);
-}
-
 export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
-  loadDelayed();
 }
 
-applySpectrumTheme();
 void loadPage();

@@ -1,6 +1,5 @@
-# Static Page Generation
+# AEM Development Scripts
 
-- `generate-static-pages.mjs` converts authored EDS fragments in `src/mocks/pages/` into complete Vite HTML entry documents.
-- Keep `index.html` as the shared document shell and homepage source.
-- Register new static routes in the generator, Vite inputs, local route map, and `vercel.json`.
-- Generated root HTML entries are ignored by Git and must never become a second authored source of truth.
+- `dev-aem.mjs` reads `aem.config.json` and supervises the Vite build watcher and AEM reverse proxy.
+- Keep process startup cross-platform and terminate both child processes when either fails or the user stops development.
+- AEM owns authored HTML and routes; scripts in this folder must not generate local page documents.

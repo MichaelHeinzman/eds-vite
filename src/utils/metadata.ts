@@ -36,7 +36,7 @@ export interface PageMetadata {
   description: string;
   canonicalUrl?: string;
   image?: string;
-  type?: "website" | "product";
+  type?: "website";
   robots?: string;
 }
 

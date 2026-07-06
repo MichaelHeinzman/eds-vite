@@ -7,7 +7,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "allowImportingTsExtensions": true,
     "module": "ESNext",
-    "types": ["vite/client", "vitest/globals"],
+    "types": ["vite/client"],
     "skipLibCheck": true,
 
     "moduleResolution": "bundler",
@@ -20,16 +20,8 @@
 
     "paths": {
       "@/*": ["./src/*"],
-      "@assets/*": ["./src/assets/*"],
       "@blocks/*": ["./src/blocks/*"],
-      "@components/*": ["./src/components/*"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@layouts/*": ["./src/layouts/*"],
-      "@lib/*": ["./src/lib/*"],
-      "@scripts/*": ["./src/scripts/*"],
-      "@services/*": ["./src/services/*"],
       "@styles/*": ["./src/styles/*"],
-      "@models/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"]
     },
 
@@ -38,5 +30,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "tests/unit"]
+  "include": ["src"]
 }

@@ -1,5 +1,0 @@
-.product-recommendations-wrapper, .recommendations-content { width: 100%; min-width: 0; }
-.recommendations-content { max-width: 1232px; margin-inline: auto; }
-.recommendations-content h2 { margin: 0 0 clamp(24px, 4vw, 40px); font-size: clamp(30px, 4vw, 46px); }
-.recommendations-content .product-grid { grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: clamp(20px, 3vw, 32px); }
-.recommendations-content .product-card-media { aspect-ratio: 16 / 11; }

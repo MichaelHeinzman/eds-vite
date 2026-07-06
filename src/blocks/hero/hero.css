@@ -7,21 +7,64 @@
   padding-inline: 0;
 }
 
-.hero { position: relative; overflow: hidden; min-height: clamp(420px, 65vw, 760px); background: #202020; }
-.hero-wrapper, .hero { width: 100%; }
-.hero-main-container, .hero-image-container, .hero-video-wrapper { position: absolute; inset: 0; }
-.hero-image-container picture, .hero-image-container img, .hero-video { width: 100%; height: 100%; object-fit: cover; }
-.hero-video-wrapper { z-index: 1; }
-.hero-image-container { z-index: 0; }
-.hero-text-content, .hero-inner-image-container, .feature-product-text { position: absolute; z-index: 2; }
-.hero-text-content { inset: auto clamp(16px, 7vw, 96px) clamp(24px, 9vw, 96px); max-width: 560px; padding: clamp(20px, 4vw, 48px); color: white; border-radius: 16px; }
-.hero-frosted-applied, .hero-frosted-glass-layout { background: rgb(20 20 20 / 58%); backdrop-filter: blur(20px); }
-.hero-gradient-effect { position: absolute; inset: 0; z-index: 1; background: linear-gradient(90deg, rgb(0 0 0 / 70%), transparent 70%); }
-.hero-button-wrapper { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
-.hero-video-placeholder-play-pause, .commerce-video-placeholder-play-pause { position: absolute; z-index: 3; right: 20px; bottom: 20px; }
-.hero-inner-image-container { inset: 15% 10% auto; max-width: 42%; }
-.feature-product-text { right: 24px; bottom: 24px; }
-@media (max-width: 767px) {
-  .hero-text-content { inset: auto 16px 16px; }
-  .hero-inner-image-container { max-width: 70%; }
+.hero.hero-boilerplate {
+  min-height: clamp(360px, 55vw, 620px);
+  overflow: hidden;
+  background: #202020;
+}
+
+.hero-boilerplate > div,
+.hero-boilerplate > div > div,
+.hero-boilerplate-content {
+  min-height: inherit;
+}
+
+.hero-boilerplate-content {
+  position: relative;
+  display: grid;
+  align-items: end;
+  padding: clamp(32px, 7vw, 80px);
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+.hero-boilerplate-picture {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  margin: 0;
+}
+
+.hero-boilerplate-picture::after {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: linear-gradient(180deg, transparent 30%, rgb(0 0 0 / 68%));
+  content: "";
+}
+
+.hero-boilerplate-picture picture,
+.hero-boilerplate-picture img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-boilerplate-picture img {
+  object-fit: cover;
+}
+
+.hero-boilerplate h1 {
+  max-width: 760px;
+  margin: 0;
+  color: white;
+  font-size: clamp(2.25rem, 6vw, 4.75rem);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+@media (width < 768px) {
+  .hero-boilerplate-content {
+    padding: 32px 24px;
+  }
 }

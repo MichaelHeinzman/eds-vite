@@ -1,7 +1,16 @@
-.site-footer { display: flex; justify-content: space-between; gap: 32px; padding: 48px clamp(16px, 5vw, 64px); background: #252525; color: #fff; }
-.footer-brand { display: inline-flex; align-items: center; gap: 12px; color: #fff; font-size: 21px; text-decoration: none; }
-.footer-brand img { width: 46px; height: 46px; border-radius: 12px; }
-.site-footer p { color: #cfcfcf; }
-.site-footer nav { display: flex; flex-wrap: wrap; align-items: center; }
-.site-footer nav a { display: inline-flex; padding: 10px 12px; color: #fff; text-decoration: none; }
-@media (max-width: 767px) { .site-footer { flex-direction: column; } }
+.site-footer {
+  display: flex;
+  width: min(100% - 48px, 1200px);
+  margin: auto;
+  padding: 40px 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid rgb(0 0 0 / 12%);
+}
+
+.site-footer p { margin: 0; }
+
+@media (width < 600px) {
+  .site-footer { align-items: flex-start; flex-direction: column; }
+}

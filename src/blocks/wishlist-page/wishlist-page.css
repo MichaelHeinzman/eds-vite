@@ -1,7 +1,0 @@
-.wishlist-page-wrapper, .wishlist-page { width: 100%; min-width: 0; }
-.wishlist-page { max-width: 1232px; margin-inline: auto; }
-.wishlist-page .catalog-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 36px; }
-.wishlist-page .catalog-heading h1 { margin: 0; font-size: clamp(42px, 6vw, 70px); }
-.page-eyebrow { margin: 0 0 12px; color: #1769c2; font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-.wishlist-page .catalog-empty { display: grid; place-items: center; min-height: 360px; text-align: center; }
-@media (max-width: 767px) { .wishlist-page .catalog-heading { align-items: flex-start; flex-direction: column; } }
