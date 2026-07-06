@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="script-src 'nonce-aem' 'strict-dynamic' 'unsafe-inline' http: https:; base-uri 'self'; object-src 'none';"
+    move-to-http-header="true"
+  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="Page not found">
+  <title>Page not found</title>
+  <script nonce="aem">
+    window.isErrorPage = true;
+    window.errorCode = '404';
+  </script>
+  <script nonce="aem" type="module" src="/aem-dist/scripts.js"></script>
+  <script nonce="aem" type="module">
+    window.addEventListener('load', () => {
+      const backButton = document.querySelector('.error-button-back');
+      if (!backButton || !document.referrer) return;
+
+      const previousUrl = new URL(document.referrer);
+      if (previousUrl.origin !== window.location.origin) return;
+
+      backButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        window.history.back();
+      });
+    });
+  </script>
+  <link rel="stylesheet" href="/aem-dist/styles.css">
+  <style>
+    main.error {
+      align-items: center;
+      background:
+        radial-gradient(circle at 15% 20%, rgb(59 99 251 / 16%), transparent 30rem),
+        radial-gradient(circle at 85% 80%, rgb(119 82 226 / 12%), transparent 28rem),
+        linear-gradient(145deg, #f8faff 0%, #fff 55%, #f7f5ff 100%);
+      box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      min-height: calc(100vh - var(--nav-height));
+      overflow: hidden;
+      padding: clamp(24px, 6vw, 72px) 20px;
+      position: relative;
+      text-align: center;
+    }
+
+    main.error .section {
+      background: rgb(255 255 255 / 88%);
+      border: 1px solid rgb(19 19 19 / 8%);
+      border-radius: 28px;
+      box-shadow: 0 24px 80px rgb(28 39 76 / 14%);
+      box-sizing: border-box;
+      margin: 0;
+      max-width: 680px;
+      padding: clamp(36px, 7vw, 72px) clamp(24px, 7vw, 72px);
+      position: relative;
+      width: 100%;
+    }
+
+    main.error .error-number {
+      background: linear-gradient(135deg, var(--link-color), #7552e2);
+      background-clip: text;
+      color: transparent;
+      font-family: var(--heading-font-family);
+      font-size: clamp(7rem, 24vw, 13rem);
+      font-weight: 700;
+      letter-spacing: -.08em;
+      line-height: .9;
+      margin: 0 0 30px;
+      padding: .06em .08em .1em 0;
+    }
+
+    main.error .error-eyebrow {
+      color: var(--link-color);
+      font-size: var(--body-font-size-xs);
+      font-weight: 700;
+      letter-spacing: .14em;
+      margin: 0 0 14px;
+      text-transform: uppercase;
+    }
+
+    main.error .error-message {
+      font-size: clamp(2rem, 6vw, 3.25rem);
+      line-height: 1.05;
+      margin: 0 0 18px;
+    }
+
+    main.error .error-description {
+      color: var(--dark-color);
+      font-size: var(--body-font-size-s);
+      margin: 0 auto 32px;
+      max-width: 32rem;
+    }
+
+    main.error .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 0;
+    }
+
+    main.error .button {
+      min-width: 132px;
+    }
+
+    main.error .error-button-home {
+      background: var(--link-color);
+      border-color: var(--link-color);
+      color: white;
+      box-shadow: 0 8px 24px rgb(59 99 251 / 24%);
+    }
+
+    main.error .error-button-home:hover,
+    main.error .error-button-home:focus-visible {
+      background: var(--link-hover-color);
+      border-color: var(--link-hover-color);
+      color: white;
+    }
+
+    @media (width <= 480px) {
+      main.error .section {
+        border-radius: 22px;
+      }
+
+      main.error .button-container,
+      main.error .button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header></header>
+  <main class="error">
+    <div class="section">
+      <p class="error-number" aria-hidden="true">404</p>
+      <p class="error-eyebrow">Looks like you took a wrong turn</p>
+      <h1 class="error-message">Page not found</h1>
+      <p class="error-description">
+        The page you’re looking for may have moved, been deleted, or never existed.
+      </p>
+      <p class="button-container">
+        <a href="/" class="button error-button-home">Go home</a>
+        <a href="/" class="button secondary error-button-back">Go back</a>
+      </p>
+    </div>
+  </main>
+  <footer></footer>
+</body>
+</html>

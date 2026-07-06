@@ -24,7 +24,7 @@ Configure the proxied AEM environment in `aem.config.json`:
 
 ```json
 {
-  "url": "https://main--aem-boilerplate--adobe.aem.page/",
+  "url": "https://main--aem-eds-vite-boilerplate--michaelheinzman.aem.live/",
   "port": 3000,
   "open": "/"
 }
