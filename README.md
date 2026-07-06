@@ -1,3 +1,5 @@
+(keep in mind still working on adding files for EDS, structure is there )
+
 # AEM EDS Vite Boilerplate
 
 A Vite, Preact, and TypeScript runtime for Adobe Experience Manager Edge Delivery Services. AEM owns authored HTML and routing; Vite compiles the progressively enhanced blocks referenced by `head.html`.
