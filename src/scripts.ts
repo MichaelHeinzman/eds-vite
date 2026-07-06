@@ -81,3 +81,11 @@ export async function loadPage() {
 }
 
 void loadPage();
+
+(async function loadDa() {
+  if (!new URL(window.location.href).searchParams.get("dapreview")) return;
+  const daPreviewUrl = "https://da.live/scripts/dapreview.js";
+  import(/* @vite-ignore */ daPreviewUrl).then(
+    ({ default: daPreview }) => daPreview(loadPage),
+  );
+}());
