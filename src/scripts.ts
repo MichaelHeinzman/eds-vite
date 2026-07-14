@@ -73,11 +73,20 @@ export async function loadLazy(doc: Document) {
 }
 
 /**
+ * Loads everything that happens a lot later,
+ * without impacting the user experience.
+ */
+export function loadDelayed() {
+  window.setTimeout(() => import("./delayed"), 3000);
+}
+
+/**
  * Loads work that can be postponed without affecting the user experience.
  */
 export async function loadPage() {
   await loadEager(document);
   await loadLazy(document);
+  loadDelayed();
 }
 
 void loadPage();
