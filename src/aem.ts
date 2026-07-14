@@ -13,6 +13,9 @@ type BlockModule = {
 
 type BlockValue = string | Node | { elems: Array<string | Node> };
 type BlockContent = BlockValue | BlockValue[][];
+type TrustedHtmlPolicy = {
+  createHTML: (value: string) => unknown;
+};
 
 interface HlxRuntime {
   codeBasePath: string;
@@ -24,8 +27,17 @@ interface HlxRuntime {
 declare global {
   interface Window {
     hlx: HlxRuntime;
+    trustedTypes?: {
+      createPolicy: (
+        name: string,
+        rules: { createHTML: (value: string) => string },
+      ) => TrustedHtmlPolicy;
+    };
   }
 }
+
+const scriptNonce = "aem";
+let trustedHtmlPolicy: TrustedHtmlPolicy | undefined;
 
 const blockModules = import.meta.glob<BlockModule>(
   "./blocks/*/*.{ts,tsx,js,jsx}",
@@ -64,6 +76,7 @@ export async function loadScript(
   await new Promise<void>((resolve, reject) => {
     const script = document.createElement("script");
     script.src = src;
+    script.nonce = attrs.nonce || scriptNonce;
     Object.entries(attrs).forEach(([name, value]) => script.setAttribute(name, value));
     script.addEventListener("load", () => resolve(), { once: true });
     script.addEventListener("error", () => reject(new Error(`Unable to load ${src}`)), {
@@ -194,6 +207,18 @@ export function decorateBlocks(main: HTMLElement) {
   main.querySelectorAll<HTMLElement>("div.section > div > div").forEach(decorateBlock);
 }
 
+function appendHtml(element: HTMLElement, html: string) {
+  if (!html) return;
+
+  trustedHtmlPolicy ||= window.trustedTypes?.createPolicy("aem-build-block", {
+    createHTML: (value) => value,
+  });
+  element.insertAdjacentHTML(
+    "beforeend",
+    (trustedHtmlPolicy ? trustedHtmlPolicy.createHTML(html) : html) as string,
+  );
+}
+
 export function buildBlock(blockName: string, content: BlockContent) {
   const table: BlockValue[][] = Array.isArray(content) ? content : [[content]];
   const block = document.createElement("div");
@@ -207,7 +232,7 @@ export function buildBlock(blockName: string, content: BlockContent) {
         ? column.elems
         : [column];
       values.forEach((value) => {
-        if (typeof value === "string") columnElement.insertAdjacentHTML("beforeend", value);
+        if (typeof value === "string") appendHtml(columnElement, value);
         else if (value) columnElement.append(value);
       });
       rowElement.append(columnElement);

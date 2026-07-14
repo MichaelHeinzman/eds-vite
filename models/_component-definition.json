@@ -1,0 +1,40 @@
+{
+  "groups": [
+    {
+      "title": "Default Content",
+      "id": "default",
+      "components": [
+        {
+          "...": "./_text.json#/definitions"
+        },
+        {
+          "...": "./_image.json#/definitions"
+        }
+      ]
+    },
+    {
+      "title": "Sections",
+      "id": "sections",
+      "components": [
+        {
+          "...": "./_section.json#/definitions"
+        }
+      ]
+    },
+    {
+      "title": "Blocks",
+      "id": "blocks",
+      "components": [
+        {
+          "...": "./_cards.json#/definitions"
+        },
+        {
+          "...": "./_columns.json#/definitions"
+        },
+        {
+          "...": "./_hero.json#/definitions"
+        }
+      ]
+    }
+  ]
+}

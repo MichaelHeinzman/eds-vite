@@ -1,1 +1,0 @@
-import{n as e,r as t}from"./vendor-CbXA6_Zf.js";function n(){return e(`div`,{class:`site-footer`,children:[e(`p`,{children:`Built with Adobe Experience Manager Edge Delivery Services.`}),e(`a`,{href:`https://www.aem.live/`,children:`Learn about Edge Delivery Services`})]})}function r(r){t(e(n,{}),r)}export{r as default};

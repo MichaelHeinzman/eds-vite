@@ -1,0 +1,62 @@
+# Documentation and assistant-only files
+*.md
+AGENTS.md
+CLAUDE.md
+LICENSE
+LICENSE.*
+
+# Tests, fixtures, and coverage
+test/
+tests/
+__tests__/
+coverage/
+*.test.*
+*.spec.*
+*.snap
+
+# Source and local build tooling
+src/
+scripts/
+vite*.config.*
+tsconfig*.json
+aem.config.json
+
+# Dependency manifests and package manager state
+package.json
+package-lock.json
+node_modules/
+.npmrc
+.yarnrc
+.pnpmrc
+pnpm-lock.yaml
+yarn.lock
+
+# Secrets and local environment files
+.env
+.env.*
+*.pem
+*.key
+*.cert
+*.crt
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Repository, editor, and OS metadata
+.git/
+.github/
+.gitignore
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+.cache/
+.vite/
+dist/
+build/

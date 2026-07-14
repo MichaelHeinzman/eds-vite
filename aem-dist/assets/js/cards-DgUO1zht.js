@@ -1,1 +1,0 @@
-function e(e){e.setAttribute(`role`,`list`),[...e.children].forEach(e=>{e.classList.add(`cards-card`),e.setAttribute(`role`,`listitem`);let t=[...e.children],n=t.find(e=>e.querySelector(`picture`));n?.classList.add(`cards-card-image`),t.filter(e=>e!==n).forEach(e=>{e.classList.add(`cards-card-body`)});let r=n?.querySelector(`img`);r&&(r.loading=`lazy`)})}export{e as default};

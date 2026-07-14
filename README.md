@@ -1,82 +1,81 @@
 # AEM EDS Vite Boilerplate
 
-A Vite, Preact, and TypeScript runtime for Adobe Experience Manager Edge Delivery Services. AEM owns authored HTML and routing; Vite compiles the progressively enhanced blocks referenced by `head.html`.
+A Vite, Preact, and TypeScript runtime for Adobe Experience Manager Edge Delivery Services. AEM owns authored HTML and routing, while this project builds the browser-ready assets used by `head.html`.
 
-## Included blocks
+## Environments
 
-- `hero` — responsive AEM Boilerplate hero with an eager, high-priority image
-- `columns` — responsive authored two-column rows
-- `cards` — responsive authored card grid
-- `header` and `footer` — lightweight Preact page chrome
+- Preview: https://main--{repo}--{owner}.aem.page/
+- Live: https://main--{repo}--{owner}.aem.live/
 
-Blocks are discovered through `import.meta.glob` and loaded only when their authored markup occurs on a page. Block styles remain code-split with their block.
+## Installation
 
-## Development
-
-Install the AEM CLI and project dependencies:
-
-```bash
-npm install -g @adobe/aem-cli
+```sh
 npm install
 ```
 
-Configure the proxied AEM environment in `aem.config.json`:
+## Build
 
-```json
-{
-  "url": "https://main--aem-eds-vite-boilerplate--michaelheinzman.aem.live/",
-  "port": 3000,
-  "open": "/"
-}
-```
-
-Start the complete development environment:
-
-```bash
-npm run dev
-```
-
-This command runs an unminified Vite development build with source maps in watch mode and starts `aem up` with the configured URL, port, and initial path. Open `http://localhost:3000/`. AEM supplies each page and merges the local `head.html`; Vite rebuilds `aem-dist/`, and the AEM development server reloads changed assets. Browser developer tools can map runtime errors back to the original TypeScript source.
-
-## Production build
-
-```bash
+```sh
 npm run build
 ```
 
-Run the production build before merging changes into `main` to verify it locally. It type-checks the TypeScript and emits stable `aem-dist/scripts.js` and `aem-dist/styles.css` entry assets plus minified, hashed JavaScript and CSS chunks for lazy blocks. Gzip and Brotli variants are generated for assets above the compression threshold.
+The build type-checks the TypeScript source and writes production assets to `aem-dist/`. AEM does not compile TypeScript, so `head.html` loads the generated `aem-dist/scripts.js` and `aem-dist/styles.css` files directly.
 
-You can commit generated `aem-dist/` changes with the source changes that produced them:
+## Local development
 
-```bash
-npm run build
-git add aem-dist
-git commit
-```
+1. Install the [AEM CLI](https://github.com/adobe/helix-cli): `npm install -g @adobe/aem-cli`
+1. Install project dependencies: `npm install`
+1. Confirm the proxied AEM environment in `aem.config.json`
+1. Start local development: `npm run dev`
+1. Open `http://localhost:3000/`
 
-GitHub Actions runs `npm run build` for pull requests. For branches in this repository, the `Build AEM assets for pull request` workflow commits changed `aem-dist/` output back to the pull-request branch, publishes the `aem-dist/current` commit status, and dispatches CI for the generated commit. Because the workflow updates the pull-request branch instead of `main`, the protected main branch continues to require pull requests.
+`npm run dev` runs the Vite AEM build in watch mode and starts `aem up` against the configured environment. AEM supplies authored pages and merges the local `head.html`; Vite rebuilds `aem-dist/` as source files change.
 
-To prevent merging before generated assets are ready, add `aem-dist/current` and the CI build as required status checks in the ruleset or branch protection rule for `main`. Enable **Require branches to be up to date before merging** so concurrent pull requests rebuild against the latest `main` instead of merging stale generated assets. The repository-wide Actions permission can remain read-only because the asset workflow explicitly requests narrowly scoped `actions: write`, `contents: write`, and `statuses: write` access.
-
-AEM does not compile TypeScript. Publish `head.html` and the generated `aem-dist/` files with the repository so production pages can load the browser-ready assets.
-
-## Structure
+## Project structure
 
 ```text
-aem.config.json
-head.html
-scripts/
-  dev-aem.mjs
-src/
-  aem.ts
-  scripts.ts
-  blocks/
-    cards/
-    columns/
-    footer/
-    header/
-    hero/
-  styles/
-  utils/
-vite.aem.config.ts
+.
+|-- .github/
+|   |-- pull_request_template.md
+|   `-- workflows/
+|-- aem-dist/
+|   |-- assets/
+|   |-- scripts.js
+|   `-- styles.css
+|-- models/
+|   |-- _cards.json
+|   |-- _columns.json
+|   |-- _component-definition.json
+|   |-- _component-filters.json
+|   |-- _component-models.json
+|   |-- _hero.json
+|   |-- _image.json
+|   |-- _page.json
+|   |-- _section.json
+|   `-- _text.json
+|-- scripts/
+|   `-- dev-aem.mjs
+|-- src/
+|   |-- blocks/
+|   |   |-- cards/
+|   |   |-- columns/
+|   |   |-- footer/
+|   |   |-- header/
+|   |   `-- hero/
+|   |-- styles/
+|   |-- utils/
+|   |-- aem.ts
+|   |-- delayed.ts
+|   `-- scripts.ts
+|-- 404.html
+|-- aem.config.json
+|-- favicon.svg
+|-- head.html
+|-- package.json
+|-- tsconfig.json
+`-- vite.aem.config.ts
 ```
+
+## Pull requests
+
+Pull requests should include the related GitHub issue and before/after AEM test URLs. The template in `.github/pull_request_template.md` includes the expected format.
