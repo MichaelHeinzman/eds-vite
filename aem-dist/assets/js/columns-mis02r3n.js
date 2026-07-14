@@ -1,0 +1,1 @@
+function e(e){[...e.children].forEach(e=>{e.classList.add(`columns-row`),[...e.children].forEach(e=>{e.classList.add(`columns-column`),e.querySelector(`picture`)&&e.classList.add(`columns-image-column`);let t=e.querySelector(`img`);t&&(t.loading=`lazy`)})})}export{e as default};
